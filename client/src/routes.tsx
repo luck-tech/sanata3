@@ -3,7 +3,9 @@ import {
   createRoute,
   createRouter,
 } from "@tanstack/react-router";
-import Layout from "./components/layout";
+import Layout from "@/components/layout";
+import Home from "@/pages/Home";
+import About from "@/pages/About";
 
 // layout
 const rootRoute = createRootRoute({
@@ -14,13 +16,13 @@ const rootRoute = createRootRoute({
 const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
-  component: () => <p>home</p>,
+  component: Home,
 });
 
 const aboutRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/about",
-  component: () => <p>about</p>,
+  component: About,
 });
 
 const routeTree = rootRoute.addChildren([homeRoute, aboutRoute]);

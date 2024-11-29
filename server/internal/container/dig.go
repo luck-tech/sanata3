@@ -1,7 +1,14 @@
 package container
 
 import (
+	"github.com/murasame29/go-httpserver-template/internal/adapter/gateway"
+	"github.com/murasame29/go-httpserver-template/internal/driver"
+	"github.com/murasame29/go-httpserver-template/internal/framework/jwts"
 	"github.com/murasame29/go-httpserver-template/internal/router"
+	"github.com/murasame29/go-httpserver-template/internal/usecase/dai"
+	"github.com/murasame29/go-httpserver-template/internal/usecase/interactor"
+	"github.com/murasame29/go-httpserver-template/internal/usecase/service"
+	"github.com/uptrace/bun"
 	"go.uber.org/dig"
 )
 
@@ -19,7 +26,14 @@ func NewContainer() error {
 
 	args := []provideArg{
 		{constructor: router.NewEcho, opts: noOpts},
-		// {constructor: db.NewRepository, opts: as[dai.DataAccessInterfce]()},
+		{constructor: jwts.NewJWTMaker, opts: noOpts},
+		{constructor: service.NewGitHub, opts: noOpts},
+		{constructor: service.NewSession, opts: noOpts},
+		{constructor: interactor.NewLogin, opts: noOpts},
+		{constructor: router.NewDI, opts: noOpts},
+		{constructor: driver.NewDB, opts: noOpts},
+		{constructor: driver.NewBun, opts: as[bun.IDB]()},
+		{constructor: gateway.NewRepository, opts: as[dai.DataAccessInterface]()},
 	}
 
 	for _, arg := range args {

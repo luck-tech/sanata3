@@ -1,6 +1,9 @@
 BINARY_NAME=app
 ENV_FILE=
 
+setup:
+	cp .env.example .env
+
 build:
 	docker compose build
 

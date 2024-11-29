@@ -15,11 +15,21 @@ func LoadEnv(path ...string) error {
 	}
 
 	config := &config{}
+	if err := env.Parse(&config.Application); err != nil {
+		return err
+	}
 
 	if err := env.Parse(&config.Server); err != nil {
 		return err
 	}
 
+	if err := env.Parse(&config.GitHub); err != nil {
+		return err
+	}
+
+	if err := env.Parse(&config.DB); err != nil {
+		return err
+	}
 	// ... configに構造体を追加したら env.Parseする
 	Config = config
 

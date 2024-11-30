@@ -10,163 +10,183 @@
 
 // Import Routes
 
-import { Route as rootRoute } from "./routes/__root";
-import { Route as RoomImport } from "./routes/room";
-import { Route as FormImport } from "./routes/form";
-import { Route as AboutImport } from "./routes/about";
-import { Route as LayoutImport } from "./routes/_layout";
-import { Route as IndexImport } from "./routes/index";
-import { Route as LayoutHomeImport } from "./routes/_layout/home";
+import { Route as rootRoute } from './routes/__root'
+import { Route as RoomImport } from './routes/room'
+import { Route as FormImport } from './routes/form'
+import { Route as AboutImport } from './routes/about'
+import { Route as LayoutImport } from './routes/_layout'
+import { Route as IndexImport } from './routes/index'
+import { Route as LayoutProfileImport } from './routes/_layout/profile'
+import { Route as LayoutHomeImport } from './routes/_layout/home'
 
 // Create/Update Routes
 
 const RoomRoute = RoomImport.update({
-  id: "/room",
-  path: "/room",
+  id: '/room',
+  path: '/room',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const FormRoute = FormImport.update({
-  id: "/form",
-  path: "/form",
+  id: '/form',
+  path: '/form',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const AboutRoute = AboutImport.update({
-  id: "/about",
-  path: "/about",
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const LayoutRoute = LayoutImport.update({
-  id: "/_layout",
+  id: '/_layout',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const IndexRoute = IndexImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
+
+const LayoutProfileRoute = LayoutProfileImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => LayoutRoute,
+} as any)
 
 const LayoutHomeRoute = LayoutHomeImport.update({
-  id: "/home",
-  path: "/home",
+  id: '/home',
+  path: '/home',
   getParentRoute: () => LayoutRoute,
-} as any);
+} as any)
 
 // Populate the FileRoutesByPath interface
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/_layout": {
-      id: "/_layout";
-      path: "";
-      fullPath: "";
-      preLoaderRoute: typeof LayoutImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/about": {
-      id: "/about";
-      path: "/about";
-      fullPath: "/about";
-      preLoaderRoute: typeof AboutImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/form": {
-      id: "/form";
-      path: "/form";
-      fullPath: "/form";
-      preLoaderRoute: typeof FormImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/room": {
-      id: "/room";
-      path: "/room";
-      fullPath: "/room";
-      preLoaderRoute: typeof RoomImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/_layout/home": {
-      id: "/_layout/home";
-      path: "/home";
-      fullPath: "/home";
-      preLoaderRoute: typeof LayoutHomeImport;
-      parentRoute: typeof LayoutImport;
-    };
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/_layout': {
+      id: '/_layout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof LayoutImport
+      parentRoute: typeof rootRoute
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutImport
+      parentRoute: typeof rootRoute
+    }
+    '/form': {
+      id: '/form'
+      path: '/form'
+      fullPath: '/form'
+      preLoaderRoute: typeof FormImport
+      parentRoute: typeof rootRoute
+    }
+    '/room': {
+      id: '/room'
+      path: '/room'
+      fullPath: '/room'
+      preLoaderRoute: typeof RoomImport
+      parentRoute: typeof rootRoute
+    }
+    '/_layout/home': {
+      id: '/_layout/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof LayoutHomeImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/profile': {
+      id: '/_layout/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof LayoutProfileImport
+      parentRoute: typeof LayoutImport
+    }
   }
 }
 
 // Create and export the route tree
 
 interface LayoutRouteChildren {
-  LayoutHomeRoute: typeof LayoutHomeRoute;
+  LayoutHomeRoute: typeof LayoutHomeRoute
+  LayoutProfileRoute: typeof LayoutProfileRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutHomeRoute: LayoutHomeRoute,
-};
+  LayoutProfileRoute: LayoutProfileRoute,
+}
 
 const LayoutRouteWithChildren =
-  LayoutRoute._addFileChildren(LayoutRouteChildren);
+  LayoutRoute._addFileChildren(LayoutRouteChildren)
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "": typeof LayoutRouteWithChildren;
-  "/about": typeof AboutRoute;
-  "/form": typeof FormRoute;
-  "/room": typeof RoomRoute;
-  "/home": typeof LayoutHomeRoute;
+  '/': typeof IndexRoute
+  '': typeof LayoutRouteWithChildren
+  '/about': typeof AboutRoute
+  '/form': typeof FormRoute
+  '/room': typeof RoomRoute
+  '/home': typeof LayoutHomeRoute
+  '/profile': typeof LayoutProfileRoute
 }
 
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "": typeof LayoutRouteWithChildren;
-  "/about": typeof AboutRoute;
-  "/form": typeof FormRoute;
-  "/room": typeof RoomRoute;
-  "/home": typeof LayoutHomeRoute;
+  '/': typeof IndexRoute
+  '': typeof LayoutRouteWithChildren
+  '/about': typeof AboutRoute
+  '/form': typeof FormRoute
+  '/room': typeof RoomRoute
+  '/home': typeof LayoutHomeRoute
+  '/profile': typeof LayoutProfileRoute
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute;
-  "/": typeof IndexRoute;
-  "/_layout": typeof LayoutRouteWithChildren;
-  "/about": typeof AboutRoute;
-  "/form": typeof FormRoute;
-  "/room": typeof RoomRoute;
-  "/_layout/home": typeof LayoutHomeRoute;
+  __root__: typeof rootRoute
+  '/': typeof IndexRoute
+  '/_layout': typeof LayoutRouteWithChildren
+  '/about': typeof AboutRoute
+  '/form': typeof FormRoute
+  '/room': typeof RoomRoute
+  '/_layout/home': typeof LayoutHomeRoute
+  '/_layout/profile': typeof LayoutProfileRoute
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "" | "/about" | "/form" | "/room" | "/home";
-  fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "" | "/about" | "/form" | "/room" | "/home";
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/' | '' | '/about' | '/form' | '/room' | '/home' | '/profile'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '' | '/about' | '/form' | '/room' | '/home' | '/profile'
   id:
-    | "__root__"
-    | "/"
-    | "/_layout"
-    | "/about"
-    | "/form"
-    | "/room"
-    | "/_layout/home";
-  fileRoutesById: FileRoutesById;
+    | '__root__'
+    | '/'
+    | '/_layout'
+    | '/about'
+    | '/form'
+    | '/room'
+    | '/_layout/home'
+    | '/_layout/profile'
+  fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  LayoutRoute: typeof LayoutRouteWithChildren;
-  AboutRoute: typeof AboutRoute;
-  FormRoute: typeof FormRoute;
-  RoomRoute: typeof RoomRoute;
+  IndexRoute: typeof IndexRoute
+  LayoutRoute: typeof LayoutRouteWithChildren
+  AboutRoute: typeof AboutRoute
+  FormRoute: typeof FormRoute
+  RoomRoute: typeof RoomRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -175,11 +195,11 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   FormRoute: FormRoute,
   RoomRoute: RoomRoute,
-};
+}
 
 export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
 
 /* ROUTE_MANIFEST_START
 {
@@ -200,7 +220,8 @@ export const routeTree = rootRoute
     "/_layout": {
       "filePath": "_layout.tsx",
       "children": [
-        "/_layout/home"
+        "/_layout/home",
+        "/_layout/profile"
       ]
     },
     "/about": {
@@ -214,6 +235,10 @@ export const routeTree = rootRoute
     },
     "/_layout/home": {
       "filePath": "_layout/home.tsx",
+      "parent": "/_layout"
+    },
+    "/_layout/profile": {
+      "filePath": "_layout/profile.tsx",
       "parent": "/_layout"
     }
   }

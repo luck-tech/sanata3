@@ -81,8 +81,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupLabel>参加中のルーム</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {data.navMain.map((item) => (
-                <SidebarMenuItem>
+              {data.navMain.map((item, idx) => (
+                <SidebarMenuItem key={idx}>
                   <SidebarMenuButton>
                     <Link to={item.url}>{item.title}</Link>
                   </SidebarMenuButton>

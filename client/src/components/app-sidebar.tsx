@@ -1,5 +1,6 @@
 import * as React from "react";
 import { GalleryVerticalEnd, Home } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 import {
   Sidebar,
@@ -25,32 +26,24 @@ const data = {
   },
   navMain: [
     {
-      title: "ホーム",
+      title: "React",
       url: "#",
-      icon: Home,
-      items: [
-        {
-          title: "おすすめルーム",
-          url: "#",
-          icon: Home,
-          isActive: true,
-        },
-      ],
     },
     {
-      title: "参加してるルーム",
+      title: "Next.js",
       url: "#",
-      items: [
-        {
-          title: "React基礎固め",
-          url: "#",
-          isActive: true,
-        },
-        {
-          title: "ITパスポート",
-          url: "#",
-        },
-      ],
+    },
+    {
+      title: "Hono",
+      url: "#",
+    },
+    {
+      title: "Web開発全般",
+      url: "#",
+    },
+    {
+      title: "ITパスポート",
+      url: "#",
     },
   ],
 };
@@ -73,24 +66,31 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive>
+              <Link to={"/home"}>
+                <Home /> <span>ホーム</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        {data.navMain.map((item) => (
-          <SidebarGroup key={item.title}>
-            <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {item.items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={item.isActive}>
-                      <a href={item.url}>{item.title}</a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        ))}
+        <SidebarGroup>
+          <SidebarGroupLabel>参加中のルーム</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {data.navMain.map((item) => (
+                <SidebarMenuItem>
+                  <SidebarMenuButton>
+                    <Link to={item.url}>{item.title}</Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

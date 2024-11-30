@@ -10,7 +10,7 @@ import { Link } from "@tanstack/react-router";
 
 export default function RoomCard() {
   return (
-    <Link to="/room">
+    <Link to="/$roomId/description" params={{ roomId: "1" }}>
       <Card className="hover:bg-sidebar">
         <CardHeader className="flex-row items-center justify-between space-y-0">
           <CardTitle className="text-xl">ルーム名</CardTitle>

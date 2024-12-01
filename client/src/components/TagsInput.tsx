@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TagsInputProps } from "@/types/form";
 import mockData from "@/mockData.json";
+import { X } from "lucide-react";
 
 const TagsInput = ({
   selectedTags,
@@ -65,7 +66,7 @@ const TagsInput = ({
   };
 
   return (
-    <div className="w-[579px]">
+    <div className="w-full max-w-screen-sm">
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <div
@@ -85,8 +86,8 @@ const TagsInput = ({
                 variant="secondary"
                 className={`flex items-center space-x-1 p-[6px_10px] ${
                   isEditing
-                    ? "bg-[#F5F5F5] text-black hover:bg-[#F5F5F5]"
-                    : "bg-[#484848] text-white hover:bg-[#484848]"
+                    ? "bg-muted text-black hover:bg-muted"
+                    : "bg-primary text-white hover:bg-primary"
                 }`}
               >
                 <span className="text-[14px]">{tag}</span>
@@ -99,7 +100,7 @@ const TagsInput = ({
                     }}
                     className="ml-1 text-muted-foreground hover:text-foreground "
                   >
-                    &times;
+                    <X size={16} />
                   </button>
                 )}
               </Badge>
@@ -118,12 +119,13 @@ const TagsInput = ({
         </PopoverTrigger>
         {isEditing && (
           <PopoverContent
-            className="w-[579px] p-2"
+            className="w-[var(--radix-popover-trigger-width)] p-2"
             // フォーカスが移動しないように設定
+            align="start"
             onOpenAutoFocus={(event) => event.preventDefault()}
             onCloseAutoFocus={(event) => event.preventDefault()}
           >
-            <ScrollArea className="h-40">
+            <ScrollArea className="h-40 w-full">
               {filteredTags.length > 0 ? (
                 <div className="flex flex-col space-y-1">
                   {filteredTags.map((tag) => (

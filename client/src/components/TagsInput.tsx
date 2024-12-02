@@ -9,8 +9,13 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TagsInputProps } from "@/types/form";
 import mockData from "@/mockData.json";
+import { X } from "lucide-react";
 
-const TagsInput = ({ selectedTags, setSelectedTags }: TagsInputProps) => {
+const TagsInput = ({
+  selectedTags,
+  setSelectedTags,
+  isEditing = true,
+}: TagsInputProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -61,11 +66,13 @@ const TagsInput = ({ selectedTags, setSelectedTags }: TagsInputProps) => {
   };
 
   return (
-    <div className="w-[579px]">
+    <div className="w-full max-w-screen-sm">
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <div
-            className="flex flex-wrap gap-2 border border-input rounded-md p-2 cursor-text"
+            className={`flex flex-wrap gap-2 ${
+              isEditing ? "border border-input" : ""
+            } rounded-md p-2 cursor-text`}
             onClick={() => {
               setIsOpen(true);
               if (inputRef.current) {
@@ -77,62 +84,73 @@ const TagsInput = ({ selectedTags, setSelectedTags }: TagsInputProps) => {
               <Badge
                 key={tag}
                 variant="secondary"
-                className="flex items-center space-x-1 p-[6px_10px]"
+                className={`flex items-center space-x-1 p-[6px_10px] ${
+                  isEditing
+                    ? "bg-muted text-black hover:bg-muted"
+                    : "bg-primary text-white hover:bg-primary"
+                }`}
               >
                 <span className="text-[14px]">{tag}</span>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeTag(tag);
-                  }}
-                  className="ml-1 text-muted-foreground hover:text-foreground "
-                >
-                  &times;
-                </button>
+                {isEditing && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeTag(tag);
+                    }}
+                    className="ml-1 text-muted-foreground hover:text-foreground "
+                  >
+                    <X size={16} />
+                  </button>
+                )}
               </Badge>
             ))}
-            <input
-              ref={inputRef}
-              className="flex-1 outline-none bg-transparent"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="ex: React, ITパスポート"
-            />
+            {isEditing && (
+              <input
+                ref={inputRef}
+                className="flex-1 outline-none bg-transparent"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="ex: React, ITパスポート"
+              />
+            )}
           </div>
         </PopoverTrigger>
-        <PopoverContent
-          className="w-[579px] p-2"
-          // フォーカスが移動しないように設定
-          onOpenAutoFocus={(event) => event.preventDefault()}
-          onCloseAutoFocus={(event) => event.preventDefault()}
-        >
-          <ScrollArea className="h-40">
-            {filteredTags.length > 0 ? (
-              <div className="flex flex-col space-y-1">
-                {filteredTags.map((tag) => (
-                  <Button
-                    key={tag}
-                    variant="ghost"
-                    className="justify-start"
-                    onClick={() => addTag(tag)}
-                    disabled={selectedTags.includes(tag)}
-                  >
-                    {tag}
-                  </Button>
-                ))}
-              </div>
-            ) : (
-              <div className="p-2 text-sm text-muted-foreground">
-                <span>
-                  一致するタグがありません。Enterキーで「{inputValue}
-                  」を追加します。
-                </span>
-              </div>
-            )}
-          </ScrollArea>
-        </PopoverContent>
+        {isEditing && (
+          <PopoverContent
+            className="w-[var(--radix-popover-trigger-width)] p-2"
+            // フォーカスが移動しないように設定
+            align="start"
+            onOpenAutoFocus={(event) => event.preventDefault()}
+            onCloseAutoFocus={(event) => event.preventDefault()}
+          >
+            <ScrollArea className="h-40 w-full">
+              {filteredTags.length > 0 ? (
+                <div className="flex flex-col space-y-1">
+                  {filteredTags.map((tag) => (
+                    <Button
+                      key={tag}
+                      variant="ghost"
+                      className="justify-start"
+                      onClick={() => addTag(tag)}
+                      disabled={selectedTags.includes(tag)}
+                    >
+                      {tag}
+                    </Button>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-2 text-sm text-muted-foreground">
+                  <span>
+                    一致するタグがありません。Enterキーで「{inputValue}
+                    」を追加します。
+                  </span>
+                </div>
+              )}
+            </ScrollArea>
+          </PopoverContent>
+        )}
       </Popover>
     </div>
   );

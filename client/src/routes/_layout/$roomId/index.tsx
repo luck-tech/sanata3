@@ -34,7 +34,7 @@ function RouteComponent() {
     }
   }, [text]);
   return (
-    <div className="container mx-auto px-6 py-5 flex flex-col h-[calc(100vh-64px)]">
+    <div className="px-6 py-5 flex flex-col h-[calc(100vh-64px)]">
       <div className="flex flex-col md:flex-row gap-4 h-full">
         <div className="flex flex-1 flex-col gap-4">
           <div className="flex justify-between items-center w-full">

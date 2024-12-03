@@ -7,7 +7,7 @@ export const UserItem = () => {
         <AvatarImage src="https://github.com/shadcn.png" />
         <AvatarFallback>CN</AvatarFallback>
       </Avatar>
-      <span className="text-lg">username</span>
+      <div className="text-lg break-all">username</div>
     </div>
   );
 };

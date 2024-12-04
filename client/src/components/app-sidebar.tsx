@@ -1,6 +1,6 @@
 import * as React from "react";
-import { GalleryVerticalEnd, Home } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { GalleryVerticalEnd, Home, Plus } from "lucide-react";
+import { Link, useMatchRoute } from "@tanstack/react-router";
 
 import {
   Sidebar,
@@ -21,29 +21,28 @@ import { NavUser } from "./nav-user";
 const data = {
   user: {
     name: "shadcn",
-    email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
     {
       title: "React",
-      url: "#",
+      url: "/react", // ルームのIdとして受け取りurlにする
     },
     {
       title: "Next.js",
-      url: "#",
+      url: "/nextjs",
     },
     {
       title: "Hono",
-      url: "#",
+      url: "/hono",
     },
     {
       title: "Web開発全般",
-      url: "#",
+      url: "/web",
     },
     {
       title: "ITパスポート",
-      url: "#",
+      url: "/it",
     },
   ],
 };
@@ -67,13 +66,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenuItem>
         </SidebarMenu>
         <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive>
-              <Link to={"/home"}>
-                <Home /> <span>ホーム</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          <SidebarLink to="/home">
+            <Home /> <span>ホーム</span>
+          </SidebarLink>
+          <SidebarLink to="/new">
+            <Plus /> <span>ルーム作成</span>
+          </SidebarLink>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
@@ -82,11 +80,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupContent>
             <SidebarMenu>
               {data.navMain.map((item, idx) => (
-                <SidebarMenuItem key={idx}>
-                  <SidebarMenuButton>
-                    <Link to={item.url}>{item.title}</Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <SidebarLink to={item.url} key={idx}>
+                  {item.title}
+                </SidebarLink>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -99,3 +95,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     </Sidebar>
   );
 }
+
+const SidebarLink = ({
+  to,
+  children,
+}: {
+  to: string;
+  children: React.ReactNode;
+}) => {
+  const matchRoute = useMatchRoute();
+  const params = matchRoute({ to: to });
+
+  return (
+    <>
+      <SidebarMenuItem>
+        <SidebarMenuButton asChild isActive={!!params}>
+          <Link to={to}>{children}</Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    </>
+  );
+};

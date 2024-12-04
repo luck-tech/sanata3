@@ -14,6 +14,8 @@ func (c ContextKey) String() string {
 
 const (
 	RequestID ContextKey = "x-request-id"
+	UserID    ContextKey = "x-user-id"
+	SessionID ContextKey = "x-session-id"
 )
 
 var contextkeys = []ContextKey{
@@ -22,6 +24,22 @@ var contextkeys = []ContextKey{
 
 func GetRequestID(ctx context.Context) string {
 	v, ok := ctx.Value(RequestID.String()).(string)
+	if !ok {
+		return ""
+	}
+	return v
+}
+
+func GetUserID(ctx context.Context) string {
+	v, ok := ctx.Value(UserID.String()).(string)
+	if !ok {
+		return ""
+	}
+	return v
+}
+
+func GetSessionID(ctx context.Context) string {
+	v, ok := ctx.Value(SessionID.String()).(string)
 	if !ok {
 		return ""
 	}

@@ -2,6 +2,8 @@ package repository
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 
 	"github.com/murasame29/go-httpserver-template/internal/entity"
 	"github.com/murasame29/go-httpserver-template/internal/usecase/dai"
@@ -17,19 +19,46 @@ func NewUserRepository(db bun.IDB) *UserRepository {
 }
 
 func (s *UserRepository) CreateUser(ctx context.Context, user *entity.User) error {
-	panic("impl me")
+	_, err := s.db.NewInsert().
+		Model(user).
+		Exec(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (s *UserRepository) GetUser(ctx context.Context, id string) (*entity.User, bool, error) {
-	panic("impl me")
+	var user entity.User
+	err := s.db.NewSelect().
+		Model(&user).
+		Where("id = ?", id).
+		Scan(ctx, &user)
+
+	if err != nil {
+		if !errors.Is(err, sql.ErrNoRows) {
+			return nil, false, err
+		}
+		return nil, false, nil
+	}
+
+	return &user, true, nil
 }
 
 func (s *UserRepository) UpdateUser(ctx context.Context, user *entity.User) error {
-	panic("impl me")
+	if _, err := s.db.NewUpdate().Model(user).WherePK().Exec(ctx); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *UserRepository) DeleteUser(ctx context.Context, id string) error {
-	panic("impl me")
+	if _, err := s.db.NewDelete().Model(&entity.User{}).Where("id = ?", id).Exec(ctx); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 var _ dai.User = (*UserRepository)(nil)

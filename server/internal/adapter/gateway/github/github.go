@@ -1,7 +1,11 @@
 package github
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"io"
+	"net/http"
 
 	v67 "github.com/google/go-github/v67/github"
 	"github.com/murasame29/go-httpserver-template/cmd/config"
@@ -30,11 +34,51 @@ func NewGitHubSerivce() *GitHubSerivce {
 }
 
 func (s *GitHubSerivce) FetchToken(ctx context.Context, code string) (*oauth2.Token, error) {
-	panic("impl me")
+	// Set us the request body as JSON
+	requestBodyMap := map[string]string{
+		"client_id":     s.oac.ClientID,
+		"client_secret": s.oac.ClientSecret,
+		"code":          code,
+	}
+	requestJSON, err := json.Marshal(requestBodyMap)
+	if err != nil {
+		return nil, err
+	}
+
+	// POST request to set URL
+	req, err := http.NewRequest(
+		"POST",
+		"https://github.com/login/oauth/access_token",
+		bytes.NewBuffer(requestJSON),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+
+	// Get the response
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	// Response body converted to stringified JSON
+	respbody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert stringified JSON to a struct object of type githubAccessTokenResponse
+	var ghresp *oauth2.Token
+	json.Unmarshal(respbody, &ghresp)
+
+	return ghresp, nil
 }
 
 func (s *GitHubSerivce) GetUserByToken(ctx context.Context, token *oauth2.Token) (*v67.User, error) {
-	panic("impl me")
+	return nil, nil
 }
 
 var _ dai.GitHubService = (*GitHubSerivce)(nil)

@@ -18,6 +18,10 @@ func NewSession(repo dai.DataAccessInterface) *Session {
 	}
 }
 
+func (s *Session) GetSessionByID(ctx context.Context, sessionID string) (*entity.Session, bool, error) {
+	return s.repo.GetSessionByID(ctx, sessionID)
+}
+
 func (s *Session) UpsertSession(ctx context.Context, userID, accessToken, refreshToken string) (string, error) {
 	session, found, err := s.repo.GetSessionByUserID(ctx, userID)
 	if err != nil {

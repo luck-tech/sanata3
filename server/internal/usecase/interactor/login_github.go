@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/murasame29/go-httpserver-template/internal/framework/jwts"
+	"github.com/murasame29/go-httpserver-template/internal/framework/serrors"
 	"github.com/murasame29/go-httpserver-template/internal/usecase/service"
 )
 
@@ -58,5 +59,31 @@ func (i *Login) GitHub(ctx context.Context, param LoginGitHubParam) (*LoginGithu
 		UserID:   loginResult.UserID,
 		UserName: loginResult.UserName,
 		Icon:     loginResult.Icon,
+	}, nil
+}
+
+type CheckLoginResult struct {
+	UserID    string
+	SessionID string
+}
+
+func (i *Login) CheckLogin(ctx context.Context, token string) (*CheckLoginResult, error) {
+	jwtPayload, err := i.jwt.VerifyToken(token)
+	if err != nil {
+		return nil, err
+	}
+
+	session, found, err := i._session.GetSessionByID(ctx, jwtPayload.SessionID)
+	if err != nil {
+		return nil, err
+	}
+
+	if !found {
+		return nil, serrors.ErrSessionNotFound
+	}
+
+	return &CheckLoginResult{
+		UserID:    session.UserID,
+		SessionID: session.ID,
 	}, nil
 }

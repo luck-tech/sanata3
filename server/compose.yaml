@@ -8,3 +8,12 @@ services:
       - 8080:8080
     volumes:
       - ./:/app
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: santa3
+      POSTGRES_USER: santa3
+      POSTGRES_DB: santa3
+    ports:
+    - 5432:5432

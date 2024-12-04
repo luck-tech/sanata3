@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/murasame29/go-httpserver-template/cmd/config"
 )
 
 const minSecretKeySize = 32
@@ -14,11 +15,11 @@ type JWTMaker struct {
 	secretKey string
 }
 
-func NewJWTMaker(secretKey string) (*JWTMaker, error) {
-	if len(secretKey) < minSecretKeySize {
+func NewJWTMaker() (*JWTMaker, error) {
+	if len(config.Config.Application.JWTSecret) < minSecretKeySize {
 		return nil, fmt.Errorf("invalid key size : must be at least %d charactors", minSecretKeySize)
 	}
-	return &JWTMaker{secretKey: secretKey}, nil
+	return &JWTMaker{secretKey: config.Config.Application.JWTSecret}, nil
 }
 
 func (maker *JWTMaker) CreateToken(sessionID string, duration time.Duration) (string, error) {

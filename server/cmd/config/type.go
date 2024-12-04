@@ -14,8 +14,9 @@ const (
 // config はアプリケーションの設定を表す構造体です。基本的には環境変数から読み込みます。
 type config struct {
 	Application struct {
-		Name string `env:"APP_NAME" envDefault:"submarine-backend"`
-		Env  ENV    `env:"APP_ENV" envDefault:"local"`
+		Name      string `env:"APP_NAME" envDefault:"submarine-backend"`
+		Env       ENV    `env:"APP_ENV" envDefault:"local"`
+		JWTSecret string `env:"JWT_SECRET"`
 	}
 
 	Server struct {

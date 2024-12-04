@@ -1,5 +1,5 @@
-import { ChevronsUpDown, LogOut, Sparkles } from "lucide-react";
-
+import { ChevronsUpDown, LogOut, User } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -21,7 +21,6 @@ export function NavUser({
 }: {
   user: {
     name: string;
-    email: string;
     avatar: string;
   };
 }) {
@@ -63,9 +62,11 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                My page
+              <DropdownMenuItem asChild>
+                <Link to="/users/$username" params={{ username: user.name }}>
+                  <User />
+                  My page
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

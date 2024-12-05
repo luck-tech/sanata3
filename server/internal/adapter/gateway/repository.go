@@ -9,13 +9,19 @@ import (
 type Repository struct {
 	*repository.UserRepository
 	*repository.SessionRepository
+	*repository.SkillRepository
+	*repository.UsedSkillRepository
+	*repository.WantLearnSkillRepository
 	*github.GitHubSerivce
 }
 
 func NewRepository(db bun.IDB) *Repository {
 	return &Repository{
-		UserRepository:    repository.NewUserRepository(db),
-		SessionRepository: repository.NewSessionRepository(db),
-		GitHubSerivce:     github.NewGitHubSerivce(),
+		UserRepository:           repository.NewUserRepository(db),
+		SessionRepository:        repository.NewSessionRepository(db),
+		SkillRepository:          repository.NewSkillRepository(db),
+		UsedSkillRepository:      repository.NewUsedSkillRepository(db),
+		WantLearnSkillRepository: repository.NewWantLearnSkillRepository(db),
+		GitHubSerivce:            github.NewGitHubSerivce(),
 	}
 }

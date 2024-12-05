@@ -13,8 +13,8 @@ type WantLearnSkill struct {
 
 func NewWantLearnSkill(
 	repo dai.DataAccessInterface,
-) *UsedSkill {
-	return &UsedSkill{
+) *WantLearnSkill {
+	return &WantLearnSkill{
 		repo: repo,
 	}
 }

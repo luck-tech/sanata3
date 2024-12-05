@@ -32,10 +32,12 @@ func NewContainer() error {
 		{constructor: service.NewSession, opts: noOpts},
 		{constructor: service.NewSkill, opts: noOpts},
 		{constructor: service.NewUsedSkill, opts: noOpts},
+		{constructor: service.NewWantLearnSkill, opts: noOpts},
 		{constructor: service.NewUser, opts: noOpts},
 
 		{constructor: interactor.NewLogin, opts: noOpts},
 		{constructor: interactor.NewUser, opts: noOpts},
+		{constructor: interactor.NewSkill, opts: noOpts},
 
 		{constructor: router.NewDI, opts: noOpts},
 		{constructor: driver.NewDB, opts: noOpts},

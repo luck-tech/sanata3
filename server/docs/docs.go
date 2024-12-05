@@ -76,13 +76,14 @@ const docTemplate = `{
                 "operationId": "SerchSkillTag",
                 "parameters": [
                     {
-                        "description": "search tag",
-                        "name": "b",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/controller.SearchSkillTagRequest"
-                        }
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "tag",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -257,17 +258,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "controller.SearchSkillTagRequest": {
-            "type": "object",
-            "properties": {
-                "limit": {
-                    "type": "integer"
-                },
-                "tag": {
                     "type": "string"
                 }
             }

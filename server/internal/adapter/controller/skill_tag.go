@@ -28,7 +28,7 @@ type SearchSkillTagResponse struct {
 // @Tags     SkillTag
 // @Accept   json
 // @Produce  json
-// @Param 	 b	  body      SearchSkillTagRequest  true "search tag"
+// @Param 	 b	  query      SearchSkillTagRequest  true "search tag"
 // @Success  200  {object}  SearchSkillTagResponse
 // @Failure  400  {object}  echo.HTTPError
 // @Failure  500  {object}  echo.HTTPError

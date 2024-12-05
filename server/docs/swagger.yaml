@@ -1,0 +1,57 @@
+definitions:
+  controller.LoginGitHubRequest:
+    properties:
+      code:
+        type: string
+    type: object
+  controller.LoginGitHubResponse:
+    properties:
+      code:
+        type: string
+      icon:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  echo.HTTPError:
+    properties:
+      message: {}
+    type: object
+info:
+  contact: {}
+  title: submarine-api
+  version: 0.0.1
+paths:
+  /login/github:
+    post:
+      consumes:
+      - application/json
+      operationId: LoginGitHub
+      parameters:
+      - description: LoginGitHubRequest
+        in: body
+        name: q
+        required: true
+        schema:
+          $ref: '#/definitions/controller.LoginGitHubRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.LoginGitHubResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: GitHub Login
+      tags:
+      - LoginRequest
+swagger: "2.0"

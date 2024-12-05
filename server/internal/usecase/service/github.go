@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/murasame29/go-httpserver-template/internal/entity"
+	"github.com/murasame29/go-httpserver-template/internal/framework/contexts"
+	"github.com/murasame29/go-httpserver-template/internal/framework/serrors"
 	"github.com/murasame29/go-httpserver-template/internal/usecase/dai"
 )
 
@@ -31,34 +33,34 @@ func (g *GitHub) Login(ctx context.Context, code string) (*LoginGitHubResult, er
 		return nil, err
 	}
 
-	userInfo, err := g.repo.GetUserByToken(ctx, token)
+	userInfo, err := g.repo.GetUserByToken(ctx, token.AccessToken)
 	if err != nil {
 		return nil, err
 	}
 
-	user, found, err := g.repo.GetUser(ctx, string(rune(userInfo.GetID())))
+	user, found, err := g.repo.GetUser(ctx, string(rune(userInfo.ID)))
 	if err != nil {
 		return nil, err
 	}
 	if !found {
 		newUser := &entity.User{
-			ID:    string(rune(userInfo.GetID())),
+			ID:    string(rune(userInfo.ID)),
 			Email: user.Email,
-			Name:  userInfo.GetName(),
-			Icon:  userInfo.GetAvatarURL(),
+			Name:  userInfo.Login,
+			Icon:  userInfo.AvatarURL,
 		}
 		if err := g.repo.CreateUser(ctx, newUser); err != nil {
 			return nil, err
 		}
 	} else {
-		user.Name = userInfo.GetName()
-		user.Icon = userInfo.GetAvatarURL()
+		user.Name = userInfo.Login
+		user.Icon = userInfo.AvatarURL
 		if err := g.repo.UpdateUser(ctx, user); err != nil {
 			return nil, err
 		}
 	}
 
-	user, _, err = g.repo.GetUser(ctx, string(rune(userInfo.GetID())))
+	user, _, err = g.repo.GetUser(ctx, string(rune(userInfo.ID)))
 	if err != nil {
 		return nil, err
 	}
@@ -70,4 +72,28 @@ func (g *GitHub) Login(ctx context.Context, code string) (*LoginGitHubResult, er
 		UserName:     user.Name,
 		Icon:         user.Icon,
 	}, nil
+}
+
+func (g *GitHub) GetUsedLanguage(ctx context.Context) (map[string]int, error) {
+	sessionID := contexts.GetSessionID(ctx)
+	session, found, err := g.repo.GetSessionByID(ctx, sessionID)
+	if err != nil {
+		return nil, err
+	}
+
+	if !found {
+		return nil, serrors.ErrSessionNotFound
+	}
+
+	userID := contexts.GetUserID(ctx)
+	user, found, err := g.repo.GetUser(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	if !found {
+		return nil, serrors.ErrSessionNotFound
+	}
+
+	return g.repo.GetUserUseLanguagesByID(ctx, session.AccessToken, user.Name)
 }

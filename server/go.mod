@@ -8,13 +8,13 @@ require (
 	github.com/caarlos0/env/v11 v11.2.2
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang-migrate/migrate/v4 v4.18.1
-	github.com/google/go-github/v67 v67.0.0
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.7.1
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/lib/pq v1.10.9
 	github.com/pandoratoolbox/bun/extra/bunslog v0.0.0-20240419144920-8d9f15e33ce6
+	github.com/sourcegraph/conc v0.3.0
 	github.com/uptrace/bun v1.2.6
 	github.com/uptrace/bun/dialect/pgdialect v1.2.6
 	go.uber.org/dig v1.18.0
@@ -25,7 +25,7 @@ require (
 require (
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
-	github.com/google/go-querystring v1.1.0 // indirect
+	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect

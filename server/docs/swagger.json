@@ -51,9 +51,182 @@
                     }
                 }
             }
+        },
+        "/skilltags": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SkillTag"
+                ],
+                "summary": "Serch SkillTag",
+                "operationId": "SerchSkillTag",
+                "parameters": [
+                    {
+                        "description": "search tag",
+                        "name": "b",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.SearchSkillTagRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.SearchSkillTagResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{userId}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get User",
+                "operationId": "GetUser",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "userID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.GetUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update User",
+                "operationId": "UpdateUser",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "userID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "update user request",
+                        "name": "b",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.UpdateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.UpdateUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "controller.GetUserResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "usedSkills": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Skill"
+                    }
+                },
+                "wantLeanSkills": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Skill"
+                    }
+                }
+            }
+        },
         "controller.LoginGitHubRequest": {
             "type": "object",
             "properties": {
@@ -79,10 +252,98 @@
                 }
             }
         },
+        "controller.SearchSkillTagRequest": {
+            "type": "object",
+            "properties": {
+                "limit": {
+                    "type": "integer"
+                },
+                "tag": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.SearchSkillTagResponse": {
+            "type": "object",
+            "properties": {
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "controller.UpdateUserRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "usedSkills": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "userID": {
+                    "type": "string"
+                },
+                "wantLearnSkills": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "controller.UpdateUserResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "usedSkills": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Skill"
+                    }
+                },
+                "wantLeanSkills": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Skill"
+                    }
+                }
+            }
+        },
         "echo.HTTPError": {
             "type": "object",
             "properties": {
                 "message": {}
+            }
+        },
+        "entity.Skill": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
             }
         }
     }

@@ -1,4 +1,25 @@
 definitions:
+  controller.GetUserResponse:
+    properties:
+      description:
+        type: string
+      email:
+        type: string
+      icon:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      usedSkills:
+        items:
+          $ref: '#/definitions/entity.Skill'
+        type: array
+      wantLeanSkills:
+        items:
+          $ref: '#/definitions/entity.Skill'
+        type: array
+    type: object
   controller.LoginGitHubRequest:
     properties:
       code:
@@ -15,9 +36,66 @@ definitions:
       name:
         type: string
     type: object
+  controller.SearchSkillTagRequest:
+    properties:
+      limit:
+        type: integer
+      tag:
+        type: string
+    type: object
+  controller.SearchSkillTagResponse:
+    properties:
+      tags:
+        items:
+          type: string
+        type: array
+    type: object
+  controller.UpdateUserRequest:
+    properties:
+      description:
+        type: string
+      usedSkills:
+        items:
+          type: string
+        type: array
+      userID:
+        type: string
+      wantLearnSkills:
+        items:
+          type: string
+        type: array
+    type: object
+  controller.UpdateUserResponse:
+    properties:
+      description:
+        type: string
+      email:
+        type: string
+      icon:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      usedSkills:
+        items:
+          $ref: '#/definitions/entity.Skill'
+        type: array
+      wantLeanSkills:
+        items:
+          $ref: '#/definitions/entity.Skill'
+        type: array
+    type: object
   echo.HTTPError:
     properties:
       message: {}
+    type: object
+  entity.Skill:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
     type: object
 info:
   contact: {}
@@ -54,4 +132,97 @@ paths:
       summary: GitHub Login
       tags:
       - LoginRequest
+  /skilltags:
+    get:
+      consumes:
+      - application/json
+      operationId: SerchSkillTag
+      parameters:
+      - description: search tag
+        in: body
+        name: b
+        required: true
+        schema:
+          $ref: '#/definitions/controller.SearchSkillTagRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.SearchSkillTagResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Serch SkillTag
+      tags:
+      - SkillTag
+  /users/{userId}:
+    get:
+      consumes:
+      - application/json
+      operationId: GetUser
+      parameters:
+      - description: userID
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.GetUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Get User
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      operationId: UpdateUser
+      parameters:
+      - description: userID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: update user request
+        in: body
+        name: b
+        required: true
+        schema:
+          $ref: '#/definitions/controller.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.UpdateUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Update User
+      tags:
+      - Users
 swagger: "2.0"

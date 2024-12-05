@@ -27,9 +27,16 @@ func NewContainer() error {
 	args := []provideArg{
 		{constructor: router.NewEcho, opts: noOpts},
 		{constructor: jwts.NewJWTMaker, opts: noOpts},
+
 		{constructor: service.NewGitHub, opts: noOpts},
 		{constructor: service.NewSession, opts: noOpts},
+		{constructor: service.NewSkill, opts: noOpts},
+		{constructor: service.NewUsedSkill, opts: noOpts},
+		{constructor: service.NewUser, opts: noOpts},
+
 		{constructor: interactor.NewLogin, opts: noOpts},
+		{constructor: interactor.NewUser, opts: noOpts},
+
 		{constructor: router.NewDI, opts: noOpts},
 		{constructor: driver.NewDB, opts: noOpts},
 		{constructor: driver.NewBun, opts: as[bun.IDB]()},

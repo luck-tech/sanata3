@@ -2,10 +2,9 @@ package service
 
 import (
 	"context"
+	"sort"
 
 	"github.com/murasame29/go-httpserver-template/internal/entity"
-	"github.com/murasame29/go-httpserver-template/internal/framework/contexts"
-	"github.com/murasame29/go-httpserver-template/internal/framework/serrors"
 	"github.com/murasame29/go-httpserver-template/internal/usecase/dai"
 )
 
@@ -74,26 +73,32 @@ func (g *GitHub) Login(ctx context.Context, code string) (*LoginGitHubResult, er
 	}, nil
 }
 
-func (g *GitHub) GetUsedLanguage(ctx context.Context) (map[string]int, error) {
-	sessionID := contexts.GetSessionID(ctx)
-	session, found, err := g.repo.GetSessionByID(ctx, sessionID)
+func (g *GitHub) GetUsedLanguage(ctx context.Context, name, token string) (map[string]int, error) {
+	languages, err := g.repo.GetUserUseLanguagesByID(ctx, token, name)
 	if err != nil {
 		return nil, err
 	}
 
-	if !found {
-		return nil, serrors.ErrSessionNotFound
+	type kv struct {
+		Key   string
+		Value int
+	}
+	var orderedLanguages []kv
+	for k, v := range languages {
+		orderedLanguages = append(orderedLanguages, kv{k, v})
 	}
 
-	userID := contexts.GetUserID(ctx)
-	user, found, err := g.repo.GetUser(ctx, userID)
-	if err != nil {
-		return nil, err
+	sort.Slice(orderedLanguages, func(i, j int) bool {
+		return orderedLanguages[i].Value > orderedLanguages[j].Value
+	})
+
+	var result = make(map[string]int)
+	for i, kv := range orderedLanguages {
+		if i >= 10 {
+			break
+		}
+		result[kv.Key] = kv.Value
 	}
 
-	if !found {
-		return nil, serrors.ErrSessionNotFound
-	}
-
-	return g.repo.GetUserUseLanguagesByID(ctx, session.AccessToken, user.Name)
+	return result, nil
 }

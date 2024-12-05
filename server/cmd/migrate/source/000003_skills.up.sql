@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS "skills" (
   "id" serial PRIMARY KEY,
-  "name" varchar NOT NULL
+  "name" varchar NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS "want_learn_skills" (

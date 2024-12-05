@@ -4,4 +4,7 @@ type DataAccessInterface interface {
 	GitHubService
 	User
 	Session
+	Skill
+	UsedSkill
+	WantLearnSkill
 }

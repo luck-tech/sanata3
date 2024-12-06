@@ -17,11 +17,15 @@ func NewUser(repo dai.DataAccessInterface) *User {
 	}
 }
 
-func (u *User) UpdateUser(ctx context.Context, user *entity.User) error {
+func (u *User) Update(ctx context.Context, user *entity.User) error {
 	return u.repo.UpdateUser(ctx, user)
 }
 
-func (u *User) GetUser(ctx context.Context, id string) (*entity.UserSkills, bool, error) {
+func (u *User) Get(ctx context.Context, userID string) (*entity.User, bool, error) {
+	return u.repo.GetUser(ctx, userID)
+}
+
+func (u *User) GetInfo(ctx context.Context, id string) (*entity.UserInfo, bool, error) {
 	user, found, err := u.repo.GetUser(ctx, id)
 	if err != nil {
 		return nil, false, err
@@ -41,7 +45,7 @@ func (u *User) GetUser(ctx context.Context, id string) (*entity.UserSkills, bool
 		return nil, false, err
 	}
 
-	return &entity.UserSkills{
+	return &entity.UserInfo{
 		User:           user,
 		UsedSkill:      usedSkill,
 		WantLeanSkills: wantLearnSkill,

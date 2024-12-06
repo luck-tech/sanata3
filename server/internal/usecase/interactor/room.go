@@ -172,6 +172,45 @@ func (i *Room) Create(ctx context.Context, param CreateRoomParam) (*GetRoomResul
 	return i.GetByID(ctx, roomID)
 }
 
+type UpdateRoomParam struct {
+	RoomID      string
+	Name        string
+	Description string
+	AimSkills   []string
+}
+
+func (i *Room) Update(ctx context.Context, param UpdateRoomParam) (*GetRoomResult, error) {
+	userID := contexts.GetUserID(ctx)
+
+	room, err := i._room.Get(ctx, param.RoomID)
+	if err != nil {
+		return nil, err
+	}
+
+	if room.OwnerID != userID {
+		return nil, serrors.ErrPermissionNotFound
+	}
+
+	newRoom := room
+	if param.Name != "" {
+		newRoom.Name = param.Name
+	}
+
+	if param.Description != "" {
+		newRoom.Description = param.Description
+	}
+
+	if err := i._room.Update(ctx, newRoom); err != nil {
+		return nil, err
+	}
+
+	if err := i._aimSkill.Upsert(ctx, param.RoomID, param.AimSkills); err != nil {
+		return nil, err
+	}
+
+	return i.GetByID(ctx, param.RoomID)
+}
+
 func (i *Room) Join(ctx context.Context, roomID string) (*GetRoomResult, error) {
 	userID := contexts.GetUserID(ctx)
 	if err := i._roomMember.Join(ctx, roomID, userID); err != nil {

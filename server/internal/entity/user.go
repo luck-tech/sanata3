@@ -32,7 +32,7 @@ func (m *User) BeforeAppendModel(ctx context.Context, query bun.Query) error {
 	return nil
 }
 
-type UserSkills struct {
+type UserInfo struct {
 	User           *User
 	UsedSkill      []UsedSkill
 	WantLeanSkills []WantLearnSkill

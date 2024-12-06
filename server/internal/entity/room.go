@@ -30,3 +30,9 @@ func (m *Room) BeforeAppendModel(ctx context.Context, query bun.Query) error {
 	}
 	return nil
 }
+
+type RoomInfo struct {
+	Room       *Room
+	AimSkill   []AimSkill
+	RoomMember []RoomMember
+}

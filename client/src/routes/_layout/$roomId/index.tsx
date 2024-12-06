@@ -6,6 +6,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Headphones, Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { useMeetingManager } from "amazon-chime-sdk-component-library-react";
+import { MeetingSessionConfiguration } from "amazon-chime-sdk-js";
+
 export const Route = createFileRoute("/_layout/$roomId/")({
   component: RouteComponent,
 });
@@ -13,6 +16,8 @@ export const Route = createFileRoute("/_layout/$roomId/")({
 function RouteComponent() {
   const [text, setText] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const meetingManager = useMeetingManager();
+
   useEffect(() => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -33,13 +38,36 @@ function RouteComponent() {
       }
     }
   }, [text]);
+
+  const joinMeeting = async () => {
+    // Fetch the meeting and attendee data from your server application
+    const response = await fetch("/my-server");
+    const data = await response.json();
+
+    // Initalize the `MeetingSessionConfiguration`
+    const meetingSessionConfiguration = new MeetingSessionConfiguration(
+      data.Meeting,
+      data.Attendee
+    );
+
+    // Create a `MeetingSession` using `join()` function with the `MeetingSessionConfiguration`
+    await meetingManager.join(meetingSessionConfiguration);
+
+    // At this point you could let users setup their devices, or by default
+    // the SDK will select the first device in the list for the kind indicated
+    // by `deviceLabels` (the default value is DeviceLabels.AudioAndVideo)
+
+    // Start the `MeetingSession` to join the meeting
+    await meetingManager.start();
+  };
+
   return (
     <div className="px-6 py-5 flex flex-col h-[calc(100vh-64px)]">
       <div className="flex flex-col md:flex-row gap-4 h-full">
         <div className="flex flex-1 flex-col gap-4">
           <div className="flex justify-between items-center w-full">
             <h2 className="text-lg font-bold">ルーム名</h2>
-            <Button size={"icon"} variant={"outline"}>
+            <Button size={"icon"} variant={"outline"} onClick={joinMeeting}>
               <Headphones />
             </Button>
           </div>

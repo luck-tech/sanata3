@@ -9,6 +9,12 @@ const queryClient = new QueryClient();
 import { routeTree } from "./routeTree.gen";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+import { ThemeProvider } from "styled-components";
+import {
+  MeetingProvider,
+  lightTheme,
+} from "amazon-chime-sdk-component-library-react";
+
 // Create a new router instance
 const router = createRouter({
   routeTree,
@@ -35,7 +41,11 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <ThemeProvider theme={lightTheme}>
+          <MeetingProvider>
+            <RouterProvider router={router} />
+          </MeetingProvider>
+        </ThemeProvider>
       </QueryClientProvider>
     </StrictMode>
   );

@@ -383,7 +383,7 @@ const docTemplate = `{
                 "members": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.User"
+                        "$ref": "#/definitions/entity.DisplayUser"
                     }
                 },
                 "ownerId": {
@@ -534,30 +534,10 @@ const docTemplate = `{
                 "message": {}
             }
         },
-        "entity.Skill": {
+        "entity.DisplayUser": {
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.User": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "type": "string"
-                },
                 "description": {
-                    "type": "string"
-                },
-                "email": {
                     "type": "string"
                 },
                 "icon": {
@@ -568,8 +548,16 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "entity.Skill": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
                 },
-                "updatedAt": {
+                "name": {
                     "type": "string"
                 }
             }

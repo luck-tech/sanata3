@@ -35,7 +35,7 @@ definitions:
         type: string
       members:
         items:
-          $ref: '#/definitions/entity.User'
+          $ref: '#/definitions/entity.DisplayUser'
         type: array
       ownerId:
         type: string
@@ -133,22 +133,9 @@ definitions:
     properties:
       message: {}
     type: object
-  entity.Skill:
+  entity.DisplayUser:
     properties:
-      id:
-        type: integer
-      name:
-        type: string
-    type: object
-  entity.User:
-    properties:
-      createdAt:
-        type: string
-      deletedAt:
-        type: string
       description:
-        type: string
-      email:
         type: string
       icon:
         type: string
@@ -156,7 +143,12 @@ definitions:
         type: string
       name:
         type: string
-      updatedAt:
+    type: object
+  entity.Skill:
+    properties:
+      id:
+        type: integer
+      name:
         type: string
     type: object
 info:

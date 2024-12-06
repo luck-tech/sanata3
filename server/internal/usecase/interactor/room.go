@@ -35,7 +35,7 @@ func NewRoom(
 type GetRoomResult struct {
 	Room    *entity.Room
 	AimTags []entity.Skill
-	Members []entity.User
+	Members []entity.DisplayUser
 }
 
 func (i *Room) GetByID(ctx context.Context, roomID string) (*GetRoomResult, error) {
@@ -78,7 +78,7 @@ func (i *Room) GetByID(ctx context.Context, roomID string) (*GetRoomResult, erro
 	return &GetRoomResult{
 		Room:    room,
 		AimTags: skills,
-		Members: users,
+		Members: entity.ToDisplayUsers(users),
 	}, nil
 }
 
@@ -137,7 +137,7 @@ func (i *Room) List(ctx context.Context) (*ListRoomResult, error) {
 		result = append(result, GetRoomResult{
 			Room:    &room,
 			AimTags: skills,
-			Members: members,
+			Members: entity.ToDisplayUsers(members),
 		})
 	}
 

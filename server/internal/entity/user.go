@@ -45,3 +45,27 @@ func ToUserMap(users []User) map[string]User {
 	}
 	return userMap
 }
+
+type DisplayUser struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Icon        string `json:"icon"`
+	Description string `json:"description"`
+}
+
+func ToDisplayUser(user User) DisplayUser {
+	return DisplayUser{
+		ID:          user.ID,
+		Name:        user.Name,
+		Icon:        user.Icon,
+		Description: user.Description,
+	}
+}
+
+func ToDisplayUsers(users []User) []DisplayUser {
+	result := make([]DisplayUser, len(users))
+	for i, user := range users {
+		result[i] = ToDisplayUser(user)
+	}
+	return result
+}

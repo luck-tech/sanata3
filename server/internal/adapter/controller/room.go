@@ -23,11 +23,11 @@ func (r GetRoomRequest) Validate() error {
 }
 
 type GetRoomResponse struct {
-	RoomID      string         `json:"roomId"`
-	Description string         `json:"description"`
-	OwnerID     string         `json:"ownerId"`
-	AimTags     []entity.Skill `json:"aimTags"`
-	Members     []entity.User  `json:"members"`
+	RoomID      string               `json:"roomId"`
+	Description string               `json:"description"`
+	OwnerID     string               `json:"ownerId"`
+	AimTags     []entity.Skill       `json:"aimTags"`
+	Members     []entity.DisplayUser `json:"members"`
 }
 
 // googleLogin godoc

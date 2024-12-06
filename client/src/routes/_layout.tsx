@@ -20,7 +20,7 @@ function LayoutComponent() {
       <AppSidebar />
       <main className="w-full">
         <SidebarInset className="min-h-screen">
-          <header className="flex h-16 shrink-0 items-center border-b gap-2 px-4 sticky top-0 bg-white z-50">
+          <header className="flex h-16 shrink-0 items-center border-b gap-2 px-4 sticky top-0 bg-white z-20">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <div className="flex justify-center items-center w-full gap-2 pr-7">

@@ -15,3 +15,14 @@ rund: build
 
 test:
 	go test -v ./...
+
+name=
+new-migrate:
+	migrate create -ext sql -dir cmd/migrate/source -seq $(name)
+
+migrate:
+	go run cmd/migrate/main.go -e .env.migrate -f cmd/migrate/source
+
+
+swag:
+	swag init --dir cmd/app/ --parseDependencyLevel 10 

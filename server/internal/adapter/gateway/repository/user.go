@@ -45,6 +45,20 @@ func (s *UserRepository) GetUser(ctx context.Context, id string) (*entity.User, 
 	return &user, true, nil
 }
 
+func (s *UserRepository) GetUsers(ctx context.Context, userIDs []string) ([]entity.User, error) {
+	var users []entity.User
+	err := s.db.NewSelect().
+		Model(&users).
+		Where("id IN (?)", userIDs).
+		Scan(ctx, &users)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
 func (s *UserRepository) UpdateUser(ctx context.Context, user *entity.User) error {
 	if _, err := s.db.NewUpdate().Model(user).WherePK().Exec(ctx); err != nil {
 		return err

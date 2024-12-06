@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"sort"
 
 	"github.com/murasame29/go-httpserver-template/internal/entity"
 	"github.com/murasame29/go-httpserver-template/internal/usecase/dai"
@@ -31,34 +32,34 @@ func (g *GitHub) Login(ctx context.Context, code string) (*LoginGitHubResult, er
 		return nil, err
 	}
 
-	userInfo, err := g.repo.GetUserByToken(ctx, token)
+	userInfo, err := g.repo.GetUserByToken(ctx, token.AccessToken)
 	if err != nil {
 		return nil, err
 	}
 
-	user, found, err := g.repo.GetUser(ctx, string(rune(userInfo.GetID())))
+	user, found, err := g.repo.GetUser(ctx, string(rune(userInfo.ID)))
 	if err != nil {
 		return nil, err
 	}
 	if !found {
 		newUser := &entity.User{
-			ID:    string(rune(userInfo.GetID())),
+			ID:    string(rune(userInfo.ID)),
 			Email: user.Email,
-			Name:  userInfo.GetName(),
-			Icon:  userInfo.GetAvatarURL(),
+			Name:  userInfo.Login,
+			Icon:  userInfo.AvatarURL,
 		}
 		if err := g.repo.CreateUser(ctx, newUser); err != nil {
 			return nil, err
 		}
 	} else {
-		user.Name = userInfo.GetName()
-		user.Icon = userInfo.GetAvatarURL()
+		user.Name = userInfo.Login
+		user.Icon = userInfo.AvatarURL
 		if err := g.repo.UpdateUser(ctx, user); err != nil {
 			return nil, err
 		}
 	}
 
-	user, _, err = g.repo.GetUser(ctx, string(rune(userInfo.GetID())))
+	user, _, err = g.repo.GetUser(ctx, string(rune(userInfo.ID)))
 	if err != nil {
 		return nil, err
 	}
@@ -70,4 +71,34 @@ func (g *GitHub) Login(ctx context.Context, code string) (*LoginGitHubResult, er
 		UserName:     user.Name,
 		Icon:         user.Icon,
 	}, nil
+}
+
+func (g *GitHub) GetUsedLanguage(ctx context.Context, name, token string) (map[string]int, error) {
+	languages, err := g.repo.GetUserUseLanguagesByID(ctx, token, name)
+	if err != nil {
+		return nil, err
+	}
+
+	type kv struct {
+		Key   string
+		Value int
+	}
+	var orderedLanguages []kv
+	for k, v := range languages {
+		orderedLanguages = append(orderedLanguages, kv{k, v})
+	}
+
+	sort.Slice(orderedLanguages, func(i, j int) bool {
+		return orderedLanguages[i].Value > orderedLanguages[j].Value
+	})
+
+	var result = make(map[string]int)
+	for i, kv := range orderedLanguages {
+		if i >= 10 {
+			break
+		}
+		result[kv.Key] = kv.Value
+	}
+
+	return result, nil
 }

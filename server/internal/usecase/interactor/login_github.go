@@ -10,20 +10,29 @@ import (
 )
 
 type Login struct {
-	_github  *service.GitHub
-	_session *service.Session
-	jwt      *jwts.JWTMaker
+	_github    *service.GitHub
+	_session   *service.Session
+	_user      *service.User
+	_skill     *service.Skill
+	_usedSkill *service.UsedSkill
+	jwt        *jwts.JWTMaker
 }
 
 func NewLogin(
 	github *service.GitHub,
 	session *service.Session,
+	user *service.User,
+	skill *service.Skill,
+	usedSkill *service.UsedSkill,
 	jwt *jwts.JWTMaker,
 ) *Login {
 	return &Login{
-		_github:  github,
-		_session: session,
-		jwt:      jwt,
+		_github:    github,
+		_session:   session,
+		_user:      user,
+		_skill:     skill,
+		_usedSkill: usedSkill,
+		jwt:        jwt,
 	}
 }
 
@@ -51,6 +60,20 @@ func (i *Login) GitHub(ctx context.Context, param LoginGitHubParam) (*LoginGithu
 
 	token, err := i.jwt.CreateToken(sessionID, time.Hour*24*30)
 	if err != nil {
+		return nil, err
+	}
+
+	languages, err := i._github.GetUsedLanguage(ctx, loginResult.UserName, token)
+	if err != nil {
+		return nil, err
+	}
+
+	var skills []string
+	for k := range languages {
+		skills = append(skills, k)
+	}
+
+	if err := i._usedSkill.UpsertUsedSkill(ctx, loginResult.UserID, skills); err != nil {
 		return nil, err
 	}
 

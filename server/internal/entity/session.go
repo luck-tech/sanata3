@@ -8,16 +8,16 @@ import (
 )
 
 type Session struct {
-	bun.BaseModel `bun:"table:sessions,alias:s"`
+	bun.BaseModel `bun:"table:sessions"`
 
-	ID           string `bun:"id"`
-	UserID       string `bun:"user_id"`
-	UserAgent    string `bun:"user_agent"`
-	AccessToken  string `bun:"access_token"`
-	RefreshToken string `bun:"refresh_token"`
-
-	CreatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
-	UpdatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
+	ID           string    `bun:"id,pk"`
+	UserID       string    `bun:"user_id,notnull"`
+	User         *User     `bun:"rel:belongs-to,join:user_id=id"`
+	UserAgent    string    `bun:"user_agent,notnull"`
+	AccessToken  string    `bun:"access_token,notnull"`
+	RefreshToken string    `bun:"refresh_token,notnull"`
+	CreatedAt    time.Time `bun:"created_at"`
+	UpdatedAt    time.Time `bun:"updated_at"`
 }
 
 var _ bun.BeforeAppendModelHook = (*Session)(nil)

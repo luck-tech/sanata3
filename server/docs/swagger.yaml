@@ -1,0 +1,363 @@
+definitions:
+  controller.CreateRoomRequest:
+    properties:
+      aimSkills:
+        items:
+          type: string
+        type: array
+      createdBy:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  controller.CreateRoomResponse:
+    properties:
+      aimTags:
+        items:
+          $ref: '#/definitions/entity.Skill'
+        type: array
+      description:
+        type: string
+      ownerId:
+        type: string
+      roomId:
+        type: string
+    type: object
+  controller.GetRoomResponse:
+    properties:
+      aimTags:
+        items:
+          $ref: '#/definitions/entity.Skill'
+        type: array
+      description:
+        type: string
+      members:
+        items:
+          $ref: '#/definitions/entity.DisplayUser'
+        type: array
+      ownerId:
+        type: string
+      roomId:
+        type: string
+    type: object
+  controller.GetUserResponse:
+    properties:
+      description:
+        type: string
+      email:
+        type: string
+      icon:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      usedSkills:
+        items:
+          $ref: '#/definitions/entity.Skill'
+        type: array
+      wantLeanSkills:
+        items:
+          $ref: '#/definitions/entity.Skill'
+        type: array
+    type: object
+  controller.ListRoomResponse:
+    properties:
+      rooms:
+        items:
+          $ref: '#/definitions/controller.GetRoomResponse'
+        type: array
+    type: object
+  controller.LoginGitHubRequest:
+    properties:
+      code:
+        type: string
+    type: object
+  controller.LoginGitHubResponse:
+    properties:
+      code:
+        type: string
+      icon:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  controller.SearchSkillTagResponse:
+    properties:
+      tags:
+        items:
+          type: string
+        type: array
+    type: object
+  controller.UpdateUserRequest:
+    properties:
+      description:
+        type: string
+      usedSkills:
+        items:
+          type: string
+        type: array
+      userID:
+        type: string
+      wantLearnSkills:
+        items:
+          type: string
+        type: array
+    type: object
+  controller.UpdateUserResponse:
+    properties:
+      description:
+        type: string
+      email:
+        type: string
+      icon:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      usedSkills:
+        items:
+          $ref: '#/definitions/entity.Skill'
+        type: array
+      wantLeanSkills:
+        items:
+          $ref: '#/definitions/entity.Skill'
+        type: array
+    type: object
+  echo.HTTPError:
+    properties:
+      message: {}
+    type: object
+  entity.DisplayUser:
+    properties:
+      description:
+        type: string
+      icon:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  entity.Skill:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+info:
+  contact: {}
+  title: submarine-api
+  version: 0.0.1
+paths:
+  /login/github:
+    post:
+      consumes:
+      - application/json
+      operationId: LoginGitHub
+      parameters:
+      - description: LoginGitHubRequest
+        in: body
+        name: q
+        required: true
+        schema:
+          $ref: '#/definitions/controller.LoginGitHubRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.LoginGitHubResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: GitHub Login
+      tags:
+      - LoginRequest
+  /rooms:
+    get:
+      consumes:
+      - application/json
+      operationId: ListRoom
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ListRoomResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: List Room
+      tags:
+      - Room
+    post:
+      consumes:
+      - application/json
+      operationId: CreateRoom
+      parameters:
+      - description: LoginGitHubRequest
+        in: body
+        name: b
+        required: true
+        schema:
+          $ref: '#/definitions/controller.CreateRoomRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.CreateRoomResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Create Room
+      tags:
+      - Room
+  /rooms/{roomId}:
+    get:
+      consumes:
+      - application/json
+      operationId: GetRoom
+      parameters:
+      - description: room ID
+        in: path
+        name: roomId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.GetRoomResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Get Room
+      tags:
+      - Room
+  /skilltags:
+    get:
+      consumes:
+      - application/json
+      operationId: SerchSkillTag
+      parameters:
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: tag
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.SearchSkillTagResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Serch SkillTag
+      tags:
+      - SkillTag
+  /users/{userId}:
+    get:
+      consumes:
+      - application/json
+      operationId: GetUser
+      parameters:
+      - description: userID
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.GetUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Get User
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      operationId: UpdateUser
+      parameters:
+      - description: userID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: update user request
+        in: body
+        name: b
+        required: true
+        schema:
+          $ref: '#/definitions/controller.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.UpdateUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Update User
+      tags:
+      - Users
+swagger: "2.0"

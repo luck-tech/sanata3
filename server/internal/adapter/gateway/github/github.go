@@ -4,12 +4,15 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 
-	v67 "github.com/google/go-github/v67/github"
 	"github.com/murasame29/go-httpserver-template/cmd/config"
+	"github.com/murasame29/go-httpserver-template/internal/entity"
+	"github.com/murasame29/go-httpserver-template/internal/framework/requests"
 	"github.com/murasame29/go-httpserver-template/internal/usecase/dai"
+	"github.com/sourcegraph/conc"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 )
@@ -77,8 +80,39 @@ func (s *GitHubSerivce) FetchToken(ctx context.Context, code string) (*oauth2.To
 	return ghresp, nil
 }
 
-func (s *GitHubSerivce) GetUserByToken(ctx context.Context, token *oauth2.Token) (*v67.User, error) {
-	return nil, nil
+func (s *GitHubSerivce) GetUserByToken(ctx context.Context, accessToken string) (*entity.GitHubUser, error) {
+	user, err := requests.RequestWithAccessToken[entity.GitHubUser](ctx, "https://api.github.com/user", accessToken)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (s *GitHubSerivce) GetUserUseLanguagesByID(ctx context.Context, accessToken, username string) (map[string]int, error) {
+	repos, err := requests.RequestWithAccessToken[[]entity.GitHubRepo](ctx, fmt.Sprintf("https://api.github.com/users/%s/repos", username), accessToken)
+	if err != nil {
+		return nil, err
+	}
+
+	var wg conc.WaitGroup
+	var languageMaps *entity.Language
+
+	for _, repo := range *repos {
+		wg.Go(func() {
+			language, err := requests.RequestWithAccessToken[map[string]int](ctx, fmt.Sprintf("https://api.github.com/repos/%s/%s/languages", username, repo.Name), accessToken)
+			if err != nil {
+				return
+			}
+
+			for k, v := range *language {
+				languageMaps.Store(k, v)
+			}
+		})
+	}
+	wg.Wait()
+
+	return languageMaps.Count, nil
 }
 
 var _ dai.GitHubService = (*GitHubSerivce)(nil)

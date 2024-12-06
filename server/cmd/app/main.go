@@ -61,6 +61,8 @@ func init() {
 	}
 }
 
+// @title         submarine-api
+// @version       0.0.1
 func main() {
 	if err := run(); err != nil {
 		slog.Error("failed to run application", "error", err)

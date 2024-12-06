@@ -244,8 +244,8 @@ const docTemplate = `{
                 "tags": [
                     "Room"
                 ],
-                "summary": "Leave Room",
-                "operationId": "LeaveRoom",
+                "summary": "Delete Room",
+                "operationId": "DeleteRoom",
                 "parameters": [
                     {
                         "type": "string",

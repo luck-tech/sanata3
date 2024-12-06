@@ -262,8 +262,8 @@ type DeleteRoomResponse struct {
 }
 
 // googleLogin godoc
-// @Summary  Leave Room
-// @ID       LeaveRoom
+// @Summary  Delete Room
+// @ID       DeleteRoom
 // @Tags     Room
 // @Accept   json
 // @Produce  json

@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { UserInfo } from "@/types/login";
 
 export const Route = createFileRoute("/github/callback")({
   component: GitHubCallback,
@@ -26,17 +25,17 @@ function GitHubCallback() {
     const fetchGitHubLogin = async () => {
       if (!code) router.navigate({ to: "/" });
       try {
-        const response = await api.post<UserInfo>("/login/github", { code });
+        const response = await api.post("/login/github", { code });
         console.log(response);
         setLoginStatus(false);
         router.navigate({ to: "/home" });
-      } catch (error: unknown) {
+      } catch (error) {
         console.error("Login Error: ", error);
       }
     };
 
     fetchGitHubLogin();
-  }, []);
+  }, [api, code, router]);
 
   if (loginStatus) {
     return <p>isLoading...</p>;

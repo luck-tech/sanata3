@@ -63,3 +63,7 @@ func (s *AimSkill) Upsert(ctx context.Context, roomID string, skills []string) e
 
 	return s.repo.UpsertAimSkills(ctx, newAimSkills)
 }
+
+func (s *AimSkill) Delete(ctx context.Context, roomID string) error {
+	return s.repo.DeleteAimSkills(ctx, roomID)
+}

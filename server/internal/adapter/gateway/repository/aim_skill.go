@@ -50,4 +50,11 @@ func (r *AimSkillRepository) GetAimSkillsByRoomIDs(ctx context.Context, roomIDs 
 	return aimSkills, nil
 }
 
+func (r *AimSkillRepository) DeleteAimSkills(ctx context.Context, roomID string) error {
+	if _, err := r.db.NewDelete().Model(&entity.AimSkill{}).Where("room_id = ?", roomID).Exec(ctx); err != nil {
+		return err
+	}
+	return nil
+}
+
 var _ dai.AimSkill = (*AimSkillRepository)(nil)

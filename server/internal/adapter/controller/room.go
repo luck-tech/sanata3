@@ -144,7 +144,7 @@ type CreateRoomResponse struct {
 // @Tags     Room
 // @Accept   json
 // @Produce  json
-// @Param 	 b			 body 		 CreateRoomRequest  true "LoginGitHubRequest"
+// @Param 	 b			 body 		 CreateRoomRequest  true "create room request"
 // @Success  200  {object}  CreateRoomResponse
 // @Failure  400  {object}  echo.HTTPError
 // @Failure  500  {object}  echo.HTTPError
@@ -175,5 +175,51 @@ func CreateRoom(i *interactor.Room) echo.HandlerFunc {
 			OwnerID:     result.Room.OwnerID,
 			AimTags:     result.AimTags,
 		})
+	}
+}
+
+type DeleteRoomRequest struct {
+	RoomID string `param:"roomId"`
+}
+
+func (r DeleteRoomRequest) Validate() error {
+	return nil
+}
+
+type DeleteRoomResponse struct {
+	Message string `json:"string"`
+}
+
+// googleLogin godoc
+// @Summary  Leave Room
+// @ID       LeaveRoom
+// @Tags     Room
+// @Accept   json
+// @Produce  json
+// @Param 	 roomId		path 		 string  true "roomID path param"
+// @Success  200  {object}  DeleteRoomResponse
+// @Failure  400  {object}  echo.HTTPError
+// @Failure  500  {object}  echo.HTTPError
+// @Router   /rooms/{roomId} [delete]
+func DeleteRoom(i *interactor.Room) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		ctx := contexts.ConvertContext(c)
+		var reqQuery DeleteRoomRequest
+		if err := c.Bind(&reqQuery); err != nil {
+			slog.Error("failed to bind request body", "error", err, "requestID", contexts.GetRequestID(ctx))
+			return echo.ErrBadRequest
+		}
+
+		if err := reqQuery.Validate(); err != nil {
+			slog.Error("failed to validate request body", "error", err, "requestID", contexts.GetRequestID(ctx))
+			return echo.ErrBadRequest
+		}
+
+		if err := i.Delete(ctx, reqQuery.RoomID); err != nil {
+			slog.Error("failed to login github", "error", err, "requestID", contexts.GetRequestID(ctx))
+			return echo.ErrInternalServerError
+		}
+
+		return c.JSON(http.StatusOK, DeleteRoomResponse{Message: "leave sccessful"})
 	}
 }

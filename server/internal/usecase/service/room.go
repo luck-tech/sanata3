@@ -50,3 +50,7 @@ func (s *Room) Create(ctx context.Context, name, description, ownerID string) (s
 
 	return roomID, nil
 }
+
+func (s *Room) Delete(ctx context.Context, roomID string) error {
+	return s.repo.DeleteRoom(ctx, roomID)
+}

@@ -5,6 +5,7 @@ import (
 
 	"github.com/murasame29/go-httpserver-template/internal/entity"
 	"github.com/murasame29/go-httpserver-template/internal/framework/contexts"
+	"github.com/murasame29/go-httpserver-template/internal/framework/serrors"
 	"github.com/murasame29/go-httpserver-template/internal/usecase/service"
 )
 
@@ -169,4 +170,49 @@ func (i *Room) Create(ctx context.Context, param CreateRoomParam) (*GetRoomResul
 	}
 
 	return i.GetByID(ctx, roomID)
+}
+
+func (i *Room) Join(ctx context.Context, roomID string) (*GetRoomResult, error) {
+	userID := contexts.GetUserID(ctx)
+	if err := i._roomMember.Join(ctx, roomID, userID); err != nil {
+		return nil, err
+	}
+
+	return i.GetByID(ctx, roomID)
+}
+
+func (i *Room) Leave(ctx context.Context, roomID string) error {
+	userID := contexts.GetUserID(ctx)
+	if err := i._roomMember.Leave(ctx, roomID, userID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (i *Room) Delete(ctx context.Context, roomID string) error {
+	userID := contexts.GetUserID(ctx)
+	room, err := i._room.Get(ctx, roomID)
+	if err != nil {
+		return err
+	}
+
+	if room.OwnerID != userID {
+		return serrors.ErrPermissionNotFound
+	}
+
+	// ここからの処理cascade組めばいらなくなる
+	if err := i._aimSkill.Delete(ctx, roomID); err != nil {
+		return err
+	}
+
+	if err := i._roomMember.Delete(ctx, roomID); err != nil {
+		return err
+	}
+
+	if err := i._room.Delete(ctx, roomID); err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -54,4 +54,12 @@ func (s *RoomRepository) ListRoom(ctx context.Context, userID string) ([]entity.
 	return rooms, nil
 }
 
+func (s *RoomRepository) DeleteRoom(ctx context.Context, userID string) error {
+	if _, err := s.db.NewDelete().Model(&entity.Room{}).Where("id = ?", userID).Exec(ctx); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 var _ dai.Room = (*RoomRepository)(nil)

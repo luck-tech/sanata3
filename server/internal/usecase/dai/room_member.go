@@ -11,4 +11,5 @@ type RoomMember interface {
 	GetRoomMembersByRoomIDs(ctx context.Context, roomIDs []string) ([]entity.RoomMember, error)
 	JoinRoom(ctx context.Context, roomID, userID string) error
 	LeaveRoom(ctx context.Context, roomID, userID string) error
+	DeleteRoomMembers(ctx context.Context,roomID string)error
 }

@@ -46,12 +46,12 @@ func NewEcho(interactors *di) http.Handler {
 
 			roomRoute := roomsRoute.Group("/:roomId")
 			{
-				roomRoute.GET("", controller.GetRoom(interactors.room))    // figma: room-description
-				roomRoute.PUT("", nil)    // figma: room-description
-				roomRoute.DELETE("", nil) // figma: room-description
+				roomRoute.GET("", controller.GetRoom(interactors.room))       // figma: room-description
+				roomRoute.PUT("", nil)                                        // figma: room-description
+				roomRoute.DELETE("", controller.DeleteRoom(interactors.room)) // figma: room-description
 
-				roomRoute.POST("/members ", nil)   // figma: room-description
-				roomRoute.DELETE("/members ", nil) // figma: room-description
+				roomRoute.POST("/members ", controller.JoinRoom(interactors.room))    // figma: room-description
+				roomRoute.DELETE("/members ", controller.LeaveRoom(interactors.room)) // figma: room-description
 
 				roomRoute.GET("/chat", nil)  // figma: room
 				roomRoute.POST("/chat", nil) // figma: room

@@ -53,4 +53,11 @@ func (r *RoomMemberRepository) LeaveRoom(ctx context.Context, roomID, userID str
 	return nil
 }
 
+func (r *RoomMemberRepository) DeleteRoomMembers(ctx context.Context, roomID string) error {
+	if _, err := r.db.NewDelete().Model(&entity.RoomMember{}).Where("room_id = ?", roomID).Exec(ctx); err != nil {
+		return err
+	}
+	return nil
+}
+
 var _ dai.RoomMember = (*RoomMemberRepository)(nil)

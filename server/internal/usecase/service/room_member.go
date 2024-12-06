@@ -59,3 +59,7 @@ func (s *RoomMember) Join(ctx context.Context, roomID, userID string) error {
 func (s *RoomMember) Leave(ctx context.Context, roomID, userID string) error {
 	return s.repo.LeaveRoom(ctx, roomID, userID)
 }
+
+func (s *RoomMember) Delete(ctx context.Context, roomID string) error {
+	return s.repo.DeleteRoomMembers(ctx, roomID)
+}

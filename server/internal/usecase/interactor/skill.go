@@ -25,7 +25,7 @@ func NewSkill(
 }
 
 func (s *Skill) SearchSkill(ctx context.Context, query string, limit int) ([]string, error) {
-	skills, err := s._skill.SearchSkills(ctx, query, limit)
+	skills, err := s._skill.Search(ctx, query, limit)
 	if err != nil {
 		return nil, err
 	}

@@ -52,12 +52,14 @@ func (u *User) GetUser(ctx context.Context, id string) (*entity.User, []entity.S
 		wantLeanSkillIDs = append(wantLeanSkillIDs, wls.SkillID)
 	}
 
-	usedSkills, err := u._skill.GetSkills(ctx, usedSkillIDs)
+	// ここ効率化できるけど面倒だからいったん無視
+
+	usedSkills, err := u._skill.List(ctx, usedSkillIDs)
 	if err != nil {
 		return nil, nil, nil, err
 	}
 
-	wantLeanSkills, err := u._skill.GetSkills(ctx, wantLeanSkillIDs)
+	wantLeanSkills, err := u._skill.List(ctx, wantLeanSkillIDs)
 	if err != nil {
 		return nil, nil, nil, err
 	}
@@ -80,11 +82,13 @@ func (u *User) UpdateUser(ctx context.Context, param UpdateUserParam) (*entity.U
 		return nil, nil, nil, err
 	}
 
-	if err := u._skill.UpsertSkills(ctx, param.UsedSkills); err != nil {
+	// ここ効率化できるけど面倒だからいったん無視
+
+	if err := u._skill.Upsert(ctx, param.UsedSkills); err != nil {
 		return nil, nil, nil, err
 	}
 
-	if err := u._skill.UpsertSkills(ctx, param.WantLearnSkills); err != nil {
+	if err := u._skill.Upsert(ctx, param.WantLearnSkills); err != nil {
 		return nil, nil, nil, err
 	}
 

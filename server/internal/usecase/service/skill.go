@@ -19,18 +19,18 @@ func NewSkill(
 	}
 }
 
-func (s *Skill) UpsertSkills(ctx context.Context, skills []string) error {
+func (s *Skill) Upsert(ctx context.Context, skills []string) error {
 	return s.repo.UpsertSkills(ctx, skills)
 }
 
-func (s *Skill) GetSkills(ctx context.Context, skills []int) ([]entity.Skill, error) {
+func (s *Skill) List(ctx context.Context, skills []int) ([]entity.Skill, error) {
 	return s.repo.GetSkills(ctx, skills)
 }
 
-func (s *Skill) GetSkillsByName(ctx context.Context, skills []string) ([]entity.Skill, error) {
+func (s *Skill) GetByName(ctx context.Context, skills []string) ([]entity.Skill, error) {
 	return s.repo.GetSkillsByName(ctx, skills)
 }
 
-func (s *Skill) SearchSkills(ctx context.Context, query string, limit int) ([]entity.Skill, error) {
+func (s *Skill) Search(ctx context.Context, query string, limit int) ([]entity.Skill, error) {
 	return s.repo.SearchSkills(ctx, query, limit)
 }

@@ -1,4 +1,47 @@
 definitions:
+  controller.CreateRoomRequest:
+    properties:
+      aimSkills:
+        items:
+          type: string
+        type: array
+      createdBy:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  controller.CreateRoomResponse:
+    properties:
+      aimTags:
+        items:
+          $ref: '#/definitions/entity.Skill'
+        type: array
+      description:
+        type: string
+      ownerId:
+        type: string
+      roomId:
+        type: string
+    type: object
+  controller.GetRoomResponse:
+    properties:
+      aimTags:
+        items:
+          $ref: '#/definitions/entity.Skill'
+        type: array
+      description:
+        type: string
+      members:
+        items:
+          $ref: '#/definitions/entity.User'
+        type: array
+      ownerId:
+        type: string
+      roomId:
+        type: string
+    type: object
   controller.GetUserResponse:
     properties:
       description:
@@ -18,6 +61,13 @@ definitions:
       wantLeanSkills:
         items:
           $ref: '#/definitions/entity.Skill'
+        type: array
+    type: object
+  controller.ListRoomResponse:
+    properties:
+      rooms:
+        items:
+          $ref: '#/definitions/controller.GetRoomResponse'
         type: array
     type: object
   controller.LoginGitHubRequest:
@@ -90,6 +140,25 @@ definitions:
       name:
         type: string
     type: object
+  entity.User:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      description:
+        type: string
+      email:
+        type: string
+      icon:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
 info:
   contact: {}
   title: submarine-api
@@ -125,6 +194,87 @@ paths:
       summary: GitHub Login
       tags:
       - LoginRequest
+  /rooms:
+    get:
+      consumes:
+      - application/json
+      operationId: ListRoom
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ListRoomResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: List Room
+      tags:
+      - Room
+    post:
+      consumes:
+      - application/json
+      operationId: CreateRoom
+      parameters:
+      - description: LoginGitHubRequest
+        in: body
+        name: b
+        required: true
+        schema:
+          $ref: '#/definitions/controller.CreateRoomRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.CreateRoomResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Create Room
+      tags:
+      - Room
+  /rooms/{roomId}:
+    get:
+      consumes:
+      - application/json
+      operationId: GetRoom
+      parameters:
+      - description: room ID
+        in: path
+        name: roomId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.GetRoomResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Get Room
+      tags:
+      - Room
   /skilltags:
     get:
       consumes:

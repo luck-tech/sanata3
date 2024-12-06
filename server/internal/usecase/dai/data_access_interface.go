@@ -7,4 +7,7 @@ type DataAccessInterface interface {
 	Skill
 	UsedSkill
 	WantLearnSkill
+	AimSkill
+	Room
+	RoomMember
 }

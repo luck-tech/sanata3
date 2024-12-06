@@ -37,3 +37,11 @@ type UserSkills struct {
 	UsedSkill      []UsedSkill
 	WantLeanSkills []WantLearnSkill
 }
+
+func ToUserMap(users []User) map[string]User {
+	userMap := make(map[string]User)
+	for _, user := range users {
+		userMap[user.ID] = user
+	}
+	return userMap
+}

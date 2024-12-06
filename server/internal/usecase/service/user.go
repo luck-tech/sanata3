@@ -47,3 +47,7 @@ func (u *User) GetUser(ctx context.Context, id string) (*entity.UserSkills, bool
 		WantLeanSkills: wantLearnSkill,
 	}, true, nil
 }
+
+func (s *User) List(ctx context.Context, userIDs []string) ([]entity.User, error) {
+	return s.repo.GetUsers(ctx, userIDs)
+}

@@ -41,12 +41,12 @@ func NewEcho(interactors *di) http.Handler {
 
 		roomsRoute := v1Route.Group("/rooms")
 		{
-			roomsRoute.GET("", nil)  // figma: home
-			roomsRoute.POST("", nil) // figma: room-create
+			roomsRoute.GET("", controller.ListRoom(interactors.room))    // figma: home
+			roomsRoute.POST("", controller.CreateRoom(interactors.room)) // figma: room-create
 
 			roomRoute := roomsRoute.Group("/:roomId")
 			{
-				roomRoute.GET("", nil)    // figma: room-description
+				roomRoute.GET("", controller.GetRoom(interactors.room))    // figma: room-description
 				roomRoute.PUT("", nil)    // figma: room-description
 				roomRoute.DELETE("", nil) // figma: room-description
 

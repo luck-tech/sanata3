@@ -20,9 +20,18 @@ definitions:
         type: array
       description:
         type: string
+      members:
+        items:
+          $ref: '#/definitions/entity.DisplayUser'
+        type: array
       ownerId:
         type: string
       roomId:
+        type: string
+    type: object
+  controller.DeleteRoomResponse:
+    properties:
+      string:
         type: string
     type: object
   controller.GetRoomResponse:
@@ -63,6 +72,28 @@ definitions:
           $ref: '#/definitions/entity.Skill'
         type: array
     type: object
+  controller.JoinRoomResponse:
+    properties:
+      aimTags:
+        items:
+          $ref: '#/definitions/entity.Skill'
+        type: array
+      description:
+        type: string
+      members:
+        items:
+          $ref: '#/definitions/entity.DisplayUser'
+        type: array
+      ownerId:
+        type: string
+      roomId:
+        type: string
+    type: object
+  controller.LeaveRoomResponse:
+    properties:
+      string:
+        type: string
+    type: object
   controller.ListRoomResponse:
     properties:
       rooms:
@@ -92,6 +123,19 @@ definitions:
         items:
           type: string
         type: array
+    type: object
+  controller.UpdateRoomRequest:
+    properties:
+      aimSkills:
+        items:
+          type: string
+        type: array
+      description:
+        type: string
+      name:
+        type: string
+      roomID:
+        type: string
     type: object
   controller.UpdateUserRequest:
     properties:
@@ -214,7 +258,7 @@ paths:
       - application/json
       operationId: CreateRoom
       parameters:
-      - description: LoginGitHubRequest
+      - description: create room request
         in: body
         name: b
         required: true
@@ -239,6 +283,34 @@ paths:
       tags:
       - Room
   /rooms/{roomId}:
+    delete:
+      consumes:
+      - application/json
+      operationId: LeaveRoom
+      parameters:
+      - description: roomID path param
+        in: path
+        name: roomId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.DeleteRoomResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Leave Room
+      tags:
+      - Room
     get:
       consumes:
       - application/json
@@ -265,6 +337,97 @@ paths:
           schema:
             $ref: '#/definitions/echo.HTTPError'
       summary: Get Room
+      tags:
+      - Room
+    put:
+      consumes:
+      - application/json
+      operationId: UpdateRoom
+      parameters:
+      - description: roomID path param
+        in: path
+        name: roomId
+        required: true
+        type: string
+      - description: create room request
+        in: body
+        name: b
+        required: true
+        schema:
+          $ref: '#/definitions/controller.UpdateRoomRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.CreateRoomResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Update Room
+      tags:
+      - Room
+  /rooms/{roomId}/members:
+    delete:
+      consumes:
+      - application/json
+      operationId: LeaveRoom
+      parameters:
+      - description: roomID path param
+        in: path
+        name: roomId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.LeaveRoomResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Leave Room
+      tags:
+      - Room
+    post:
+      consumes:
+      - application/json
+      operationId: JoinRoom
+      parameters:
+      - description: roomID path param
+        in: path
+        name: roomId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.JoinRoomResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Join Room
       tags:
       - Room
   /skilltags:

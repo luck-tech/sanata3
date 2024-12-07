@@ -27,7 +27,11 @@ func NewEcho(interactors *di) http.Handler {
 	}
 
 	v1Route := engine.Group("/v1")
-	v1Route.Use(middleware.Auth(interactors.login))
+	v1Route.Use(
+		middleware.AllowAllOrigins(),
+		middleware.RequestID(),
+		middleware.Auth(interactors.login),
+	)
 
 	{
 		usersRoute := v1Route.Group("/users")

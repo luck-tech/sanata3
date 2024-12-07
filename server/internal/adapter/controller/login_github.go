@@ -67,7 +67,7 @@ func LoginGitHub(i *interactor.Login) echo.HandlerFunc {
 			ID:        result.UserID,
 			Name:      result.UserName,
 			Icon:      result.Icon,
-			Code:      reqBody.Code,
+			Code:      result.JWT,
 			IsNewUser: result.IsNewUser,
 		})
 	}

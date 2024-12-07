@@ -64,19 +64,23 @@ func (i *Login) GitHub(ctx context.Context, param LoginGitHubParam) (*LoginGithu
 		return nil, err
 	}
 
-	languages, err := i._github.GetUsedLanguage(ctx, loginResult.UserName, token)
-	if err != nil {
-		return nil, err
-	}
+	// languages, err := i._github.GetUsedLanguage(ctx, loginResult.UserName, token)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	var skills []string
-	for k := range languages {
-		skills = append(skills, k)
-	}
+	// var skills []string
+	// for k := range languages {
+	// 	skills = append(skills, k)
+	// }
 
-	if err := i._usedSkill.UpsertUsedSkill(ctx, loginResult.UserID, skills); err != nil {
-		return nil, err
-	}
+	// if err := i._skill.Upsert(ctx, skills); err != nil {
+	// 	return nil, err
+	// }
+
+	// if err := i._usedSkill.UpsertUsedSkill(ctx, loginResult.UserID, skills); err != nil {
+	// 	return nil, err
+	// }
 
 	return &LoginGithubResult{
 		JWT:       token,

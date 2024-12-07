@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"log/slog"
 	"strings"
 
@@ -25,7 +26,7 @@ func SetupCORS() echo.MiddlewareFunc {
 func AllowAllOrigins() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			slog.Info("hoge")
+			fmt.Println(c.Request().Header)
 			requestAddr := c.Request().Header.Get("Origin")
 			// no origin ignore
 			if requestAddr == "" {
@@ -42,9 +43,9 @@ func AllowAllOrigins() echo.MiddlewareFunc {
 
 			c.Response().Header().Set("Access-Control-Allow-Origin", requestAddr)
 			c.Response().Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS")
-			c.Response().Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+			c.Response().Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept")
 			c.Response().Header().Set("Access-Control-Max-Age", "3600")
-			c.Response().Header().Set("Access-Control-Allow-Credentials", "true")
+			// c.Response().Header().Set("Access-Control-Allow-Credentials", "true")
 			c.Response().Header().Set("X-Request-ID", contexts.GetRequestID(ctx))
 
 			return next(c)

@@ -58,7 +58,7 @@ function RouteComponent() {
     mutationFn: async (room: z.infer<typeof formSchema>) => {
       console.log("クリック");
       const token = localStorage.getItem("code");
-      const res = await api.post("/rooms", room, {
+      const res = await api.post("/v1/rooms", room, { //なおしといて @haru-036
         headers: {
           Authorization: token,
         },

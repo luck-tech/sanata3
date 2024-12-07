@@ -545,6 +545,9 @@ const docTemplate = `{
                         "$ref": "#/definitions/entity.DisplayUser"
                     }
                 },
+                "name": {
+                    "type": "string"
+                },
                 "ownerId": {
                     "type": "string"
                 },
@@ -578,6 +581,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/entity.DisplayUser"
                     }
+                },
+                "name": {
+                    "type": "string"
                 },
                 "ownerId": {
                     "type": "string"
@@ -636,6 +642,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/entity.DisplayUser"
                     }
+                },
+                "name": {
+                    "type": "string"
                 },
                 "ownerId": {
                     "type": "string"

@@ -536,6 +536,9 @@
                         "$ref": "#/definitions/entity.DisplayUser"
                     }
                 },
+                "name": {
+                    "type": "string"
+                },
                 "ownerId": {
                     "type": "string"
                 },
@@ -569,6 +572,9 @@
                     "items": {
                         "$ref": "#/definitions/entity.DisplayUser"
                     }
+                },
+                "name": {
+                    "type": "string"
                 },
                 "ownerId": {
                     "type": "string"
@@ -627,6 +633,9 @@
                     "items": {
                         "$ref": "#/definitions/entity.DisplayUser"
                     }
+                },
+                "name": {
+                    "type": "string"
                 },
                 "ownerId": {
                     "type": "string"

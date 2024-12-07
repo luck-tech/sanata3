@@ -2,6 +2,7 @@ package interactor
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/murasame29/go-httpserver-template/internal/framework/jwts"
@@ -52,22 +53,26 @@ func (i *Login) GitHub(ctx context.Context, param LoginGitHubParam) (*LoginGithu
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("ok1")
 
 	sessionID, err := i._session.UpsertSession(ctx, loginResult.UserID, loginResult.AccessToken, loginResult.RefreshToken)
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("ok2")
 
 	token, err := i.jwt.CreateToken(sessionID, time.Hour*24*30)
 	if err != nil {
 		return nil, err
 	}
 
+	fmt.Println("ok3")
 	languages, err := i._github.GetUsedLanguage(ctx, loginResult.UserName, token)
 	if err != nil {
 		return nil, err
 	}
 
+	fmt.Println("ok4")
 	var skills []string
 	for k := range languages {
 		skills = append(skills, k)
@@ -77,6 +82,7 @@ func (i *Login) GitHub(ctx context.Context, param LoginGitHubParam) (*LoginGithu
 		return nil, err
 	}
 
+	fmt.Println("ok5")
 	return &LoginGithubResult{
 		JWT:      token,
 		UserID:   loginResult.UserID,

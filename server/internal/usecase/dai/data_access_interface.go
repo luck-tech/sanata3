@@ -10,4 +10,5 @@ type DataAccessInterface interface {
 	AimSkill
 	Room
 	RoomMember
+	Chat
 }

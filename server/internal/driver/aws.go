@@ -9,7 +9,7 @@ import (
 )
 
 func NewAWSConfig() aws.Config {
-	awsConfig, err := awsConfig.LoadDefaultConfig(context.TODO())
+	awsConfig, err := awsConfig.LoadDefaultConfig(context.TODO(), awsConfig.WithRegion("us-west-2"))
 	if err != nil {
 		panic(err)
 	}

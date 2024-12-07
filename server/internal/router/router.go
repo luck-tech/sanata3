@@ -59,8 +59,13 @@ func NewEcho(interactors *di) http.Handler {
 				roomRoute.POST("/members", controller.JoinRoom(interactors.room))    // figma: room-description
 				roomRoute.DELETE("/members", controller.LeaveRoom(interactors.room)) // figma: room-description
 
-				roomRoute.GET("/chat", nil)  // figma: room
-				roomRoute.POST("/chat", nil) // figma: room
+				chatRoute := roomRoute.Group("/chat")
+				{
+					chatRoute.GET("", controller.JoinChatRoom(interactors.chat))          // figma: room
+					chatRoute.POST("", controller.PostChat(interactors.chat))             // figma: room
+					chatRoute.PUT("/:chatId", controller.EditChat(interactors.chat))      // figma: room
+					chatRoute.DELETE("/:chatId", controller.DeleteChat(interactors.chat)) // figma: room
+				}
 			}
 		}
 

@@ -19,6 +19,20 @@ func NewRoomMember(
 	}
 }
 
+// TODO:ちゃんとクエリにした方がいいけど面倒
+func (s *RoomMember) Find(ctx context.Context, roomID, userID string) (bool, error) {
+	members, err := s.List(ctx, roomID)
+	if err != nil {
+		return false, err
+	}
+	for _, member := range members {
+		if member.UserID == userID {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
 func (s *RoomMember) List(ctx context.Context, roomID string) ([]entity.RoomMember, error) {
 	return s.repo.GetRoomMembers(ctx, roomID)
 }

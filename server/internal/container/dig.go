@@ -37,11 +37,13 @@ func NewContainer() error {
 		{constructor: service.NewAimSkill, opts: noOpts},
 		{constructor: service.NewRoom, opts: noOpts},
 		{constructor: service.NewRoomMember, opts: noOpts},
+		{constructor: service.NewChat, opts: noOpts},
 
 		{constructor: interactor.NewLogin, opts: noOpts},
 		{constructor: interactor.NewUser, opts: noOpts},
 		{constructor: interactor.NewSkill, opts: noOpts},
 		{constructor: interactor.NewRoom, opts: noOpts},
+		{constructor: interactor.NewChat, opts: noOpts},
 
 		{constructor: router.NewDI, opts: noOpts},
 		{constructor: driver.NewDB, opts: noOpts},

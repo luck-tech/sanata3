@@ -65,7 +65,7 @@ func NewEcho(interactors *di) http.Handler {
 		}
 
 		v1Route.GET("/search", nil)                                              // figma: search
-		v1Route.GET("/skilltags ", controller.SearchSkillTag(interactors.skill)) // figma: search
+		v1Route.GET("/skilltags", controller.SearchSkillTag(interactors.skill)) // figma: search
 	}
 
 	return engine

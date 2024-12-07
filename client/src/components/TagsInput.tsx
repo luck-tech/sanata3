@@ -1,34 +1,68 @@
 import { useState, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TagsInputProps } from "@/types/form";
 import mockData from "@/mockData.json";
 import { X } from "lucide-react";
+import api from "@/api/axiosInstance";
 
 const TagsInput = ({
   selectedTags,
   setSelectedTags,
   isEditing = true,
 }: TagsInputProps) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>("");
+  const [availableTags, setAvailableTags] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [availableTags, setAvailableTags] = useState<string[]>(
-    mockData.availableTags
-  );
+
+  const fetchTags = async (query: string) => {
+    try {
+      setLoading(true);
+      const code = localStorage.getItem("access code"); // ローカルストレージからコードを取得
+
+      // GETリクエスト
+      const response = await api.get("/skilltags", {
+        params: {
+          limit: 10,
+          tag: query,
+        },
+        headers: {
+          Authorization: `Bearer ${code}`, // `code` を Bearer トークンとして追加
+        },
+      });
+      setAvailableTags(response.data.tags || []);
+      setDropdownVisible(true); // 結果が返ってきたらドロップダウンを表示
+    } catch (error) {
+      console.error("Error fetching tags:", error);
+      setAvailableTags([]);
+      setDropdownVisible(true); // エラー時もドロップダウンを表示（0件扱い）
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInputValue(value);
+
+    if (value.trim() !== "") {
+      fetchTags(value);
+    } else {
+      setAvailableTags([]);
+      setDropdownVisible(false); // 入力が空の場合はドロップダウンを非表示
+    }
+  };
 
   const addTag = (tag: string) => {
     if (!selectedTags.includes(tag)) {
       setSelectedTags([...selectedTags, tag]);
     }
     setInputValue("");
-    // 入力フィールドにフォーカスを戻す
+    setAvailableTags([]);
+    setDropdownVisible(false); // タグ追加時はドロップダウンを閉じる
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -36,122 +70,88 @@ const TagsInput = ({
 
   const removeTag = (tag: string) => {
     setSelectedTags(selectedTags.filter((t) => t !== tag));
-    // 入力フィールドにフォーカスを戻す
     if (inputRef.current) {
       inputRef.current.focus();
     }
   };
 
-  // 入力値に基づいてタグをフィルタリング
-  const filteredTags = availableTags.filter((tag) =>
-    tag.toLowerCase().includes(inputValue.toLowerCase())
-  );
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (inputValue.trim() !== "") {
-        // タグを `selectedTags` に追加
-        addTag(inputValue.trim());
-
-        // タグを `availableTags` に追加
-        if (!availableTags.includes(inputValue.trim())) {
-          setAvailableTags((prev) => [...prev, inputValue.trim()]);
-        }
-
-        // 入力値をクリア
-        setInputValue("");
-      }
-    }
-  };
-
   return (
     <div className="w-full max-w-screen-sm">
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
-        <PopoverTrigger asChild>
-          <div
-            className={`flex flex-wrap gap-2 ${
-              isEditing ? "border border-input" : ""
-            } rounded-md p-2 cursor-text`}
-            onClick={() => {
-              setIsOpen(true);
-              if (inputRef.current) {
-                inputRef.current.focus();
-              }
-            }}
+      <div
+        className={`flex flex-wrap gap-2 ${
+          isEditing ? "border border-input" : ""
+        } rounded-md p-2 cursor-text`}
+        onClick={() => {
+          if (inputRef.current) {
+            inputRef.current.focus();
+          }
+        }}
+      >
+        {selectedTags.map((tag) => (
+          <Badge
+            key={tag}
+            variant="secondary"
+            className={`flex items-center space-x-1 p-[6px_10px] ${
+              isEditing
+                ? "bg-muted text-black hover:bg-muted"
+                : "bg-primary text-white hover:bg-primary"
+            }`}
           >
-            {selectedTags.map((tag) => (
-              <Badge
-                key={tag}
-                variant="secondary"
-                className={`flex items-center space-x-1 p-[6px_10px] ${
-                  isEditing
-                    ? "bg-muted text-black hover:bg-muted"
-                    : "bg-primary text-white hover:bg-primary"
-                }`}
-              >
-                <span className="text-[14px]">{tag}</span>
-                {isEditing && (
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeTag(tag);
-                    }}
-                    className="ml-1 text-muted-foreground hover:text-foreground "
-                  >
-                    <X size={16} />
-                  </button>
-                )}
-              </Badge>
-            ))}
+            <span className="text-[14px]">{tag}</span>
             {isEditing && (
-              <input
-                ref={inputRef}
-                className="flex-1 outline-none bg-transparent"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="ex: React, ITパスポート"
-              />
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removeTag(tag);
+                }}
+                className="ml-1 text-muted-foreground hover:text-foreground"
+              >
+                <X size={16} />
+              </button>
             )}
-          </div>
-        </PopoverTrigger>
+          </Badge>
+        ))}
         {isEditing && (
-          <PopoverContent
-            className="w-[var(--radix-popover-trigger-width)] p-2"
-            // フォーカスが移動しないように設定
-            align="start"
-            onOpenAutoFocus={(event) => event.preventDefault()}
-            onCloseAutoFocus={(event) => event.preventDefault()}
-          >
-            <ScrollArea className="h-40 w-full">
-              {filteredTags.length > 0 ? (
-                <div className="flex flex-col space-y-1">
-                  {filteredTags.map((tag) => (
-                    <Button
-                      key={tag}
-                      variant="ghost"
-                      className="justify-start"
-                      onClick={() => addTag(tag)}
-                      disabled={selectedTags.includes(tag)}
-                    >
-                      {tag}
-                    </Button>
-                  ))}
-                </div>
-              ) : (
-                <div className="p-2 text-sm text-muted-foreground">
-                  <span>
-                    一致するタグがありません。Enterキーで「{inputValue}
-                    」を追加します。
-                  </span>
-                </div>
-              )}
-            </ScrollArea>
-          </PopoverContent>
+          <input
+            ref={inputRef}
+            className="flex-1 outline-none bg-transparent"
+            value={inputValue}
+            onChange={handleInputChange}
+            placeholder="ex: React, ITパスポート"
+          />
         )}
-      </Popover>
+      </div>
+      {isEditing && dropdownVisible && (
+        <div className="w-full border border-gray-300 rounded-md mt-1 p-2">
+          {loading ? (
+            <div className="text-sm text-muted-foreground">読み込み中...</div>
+          ) : availableTags.length > 0 ? (
+            <ScrollArea className="h-40 w-full">
+              <div className="flex flex-col space-y-1">
+                {availableTags.map((tag) => (
+                  <Button
+                    key={tag}
+                    variant="ghost"
+                    className="justify-start"
+                    onClick={() => addTag(tag)}
+                    disabled={selectedTags.includes(tag)}
+                  >
+                    {tag}
+                  </Button>
+                ))}
+              </div>
+            </ScrollArea>
+          ) : (
+            <div className="p-2 text-sm text-muted-foreground">
+              <span>
+                一致するタグがありません。Enterキーで「{inputValue}
+                」を追加します。
+              </span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

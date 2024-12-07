@@ -11,7 +11,6 @@ import (
 )
 
 func RequestWithAccessToken[T any](ctx context.Context, endpoint, accessToken string) (*T, error) {
-	fmt.Println("token:", accessToken, "endpoint", endpoint)
 	tc := oauth2.NewClient(ctx, oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: accessToken, TokenType: "Bearer"},
 	))
@@ -36,7 +35,6 @@ func RequestWithAccessToken[T any](ctx context.Context, endpoint, accessToken st
 		return nil, err
 	}
 
-	fmt.Println("resp body:", string(data))
 	var body T
 	if err := json.Unmarshal(data, &body); err != nil {
 		return nil, err
@@ -48,7 +46,6 @@ func RequestWithAccessToken[T any](ctx context.Context, endpoint, accessToken st
 func Request[T any](ctx context.Context, endpoint string) (*T, error) {
 	c := http.Client{}
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint, nil)
-	fmt.Println("endpoint", endpoint)
 	if err != nil {
 		return nil, err
 	}

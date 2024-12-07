@@ -6,6 +6,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/murasame29/go-httpserver-template/internal/adapter/controller"
 	"github.com/murasame29/go-httpserver-template/internal/adapter/middleware"
+
+	echoMiddleware "github.com/labstack/echo/v4/middleware"
 )
 
 // NewEcho は、echo/v4 を利用した http.Handlerを返す関数です。
@@ -18,7 +20,7 @@ func NewEcho(interactors *di) http.Handler {
 
 	engine.Use(
 		middleware.RequestID(),
-		middleware.AllowAllOrigins(),
+		echoMiddleware.CORS(),
 	)
 
 	loginRoute := engine.Group("/login")
@@ -27,7 +29,11 @@ func NewEcho(interactors *di) http.Handler {
 	}
 
 	v1Route := engine.Group("/v1")
-	v1Route.Use(middleware.Auth(interactors.login))
+	v1Route.Use(
+		echoMiddleware.CORS(),
+		middleware.RequestID(),
+		middleware.Auth(interactors.login),
+	)
 
 	{
 		usersRoute := v1Route.Group("/users")
@@ -64,8 +70,8 @@ func NewEcho(interactors *di) http.Handler {
 			recommendsRoute.GET("/users", nil) // figma: home
 		}
 
-		v1Route.GET("/search", nil)                                              // figma: search
-		v1Route.GET("/skilltags ", controller.SearchSkillTag(interactors.skill)) // figma: search
+		v1Route.GET("/search", nil)                                             // figma: search
+		v1Route.GET("/skilltags", controller.SearchSkillTag(interactors.skill)) // figma: search
 	}
 
 	return engine

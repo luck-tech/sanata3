@@ -48,7 +48,7 @@ type GetUserResponse struct {
 // @Success  200  {object}  GetUserResponse
 // @Failure  400  {object}  echo.HTTPError
 // @Failure  500  {object}  echo.HTTPError
-// @Router   /users/{userId} [get]
+// @Router   /v1/users/{userId} [get]
 func GetUser(i *interactor.User) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := contexts.ConvertContext(c)
@@ -122,7 +122,7 @@ type UpdateUserResponse struct {
 // @Success  200  {object}  UpdateUserResponse
 // @Failure  400  {object}  echo.HTTPError
 // @Failure  500  {object}  echo.HTTPError
-// @Router   /users/{userId} [put]
+// @Router   /v1/users/{userId} [put]
 func UpdateUser(i *interactor.User) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := contexts.ConvertContext(c)

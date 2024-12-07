@@ -33,7 +33,6 @@ func (s *RoomMember) ListByRoomIDs(ctx context.Context, roomIDs []string) (*List
 	if err != nil {
 		return nil, err
 	}
-
 	result := make(map[string][]entity.RoomMember)
 	userIDsMap := make(map[string]struct{})
 	for _, roomMember := range roomMembers {

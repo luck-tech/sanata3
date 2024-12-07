@@ -19,16 +19,21 @@ function GitHubCallback() {
       if (!code) router.navigate({ to: "/" });
       try {
         const response = await api.post("/login/github", { code });
-        console.log(response);
         setLoginStatus(false);
-        router.navigate({ to: "/form" });
+        localStorage.setItem("code", response.data.code);
+        localStorage.setItem("userId", response.data.id);
+        if (response.data.isNewUser) {
+          router.navigate({ to: "/form" });
+        } else {
+          router.navigate({ to: "/home" });
+        }
       } catch (error) {
         console.error("Login Error: ", error);
       }
     };
 
     fetchGitHubLogin();
-  }, [api, code, router]);
+  }, [code, router]);
 
   if (loginStatus) {
     return <p>isLoading...</p>;

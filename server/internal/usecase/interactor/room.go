@@ -108,7 +108,6 @@ func (i *Room) List(ctx context.Context) (*ListRoomResult, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	skillMap := entity.ToSkillMap(skills)
 
 	listMemberResult, err := i._roomMember.ListByRoomIDs(ctx, roomIDs)
@@ -158,6 +157,10 @@ func (i *Room) Create(ctx context.Context, param CreateRoomParam) (*GetRoomResul
 
 	roomID, err := i._room.Create(ctx, param.Name, param.Description, param.CreatedBy)
 	if err != nil {
+		return nil, err
+	}
+
+	if err := i._skill.Upsert(ctx, param.AimSkills); err != nil {
 		return nil, err
 	}
 

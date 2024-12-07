@@ -37,7 +37,6 @@ func NewGitHubSerivce() *GitHubSerivce {
 }
 
 func (s *GitHubSerivce) FetchToken(ctx context.Context, code string) (*oauth2.Token, error) {
-	fmt.Println(code)
 	// Set us the request body as JSON
 	requestBodyMap := map[string]string{
 		"client_id":     s.oac.ClientID,
@@ -74,8 +73,6 @@ func (s *GitHubSerivce) FetchToken(ctx context.Context, code string) (*oauth2.To
 		return nil, err
 	}
 
-	fmt.Println(string(respbody))
-
 	// Convert stringified JSON to a struct object of type githubAccessTokenResponse
 	var ghresp *oauth2.Token
 	if err := json.Unmarshal(respbody, &ghresp); err != nil {
@@ -100,8 +97,6 @@ func (s *GitHubSerivce) GetUserUseLanguagesByID(ctx context.Context, accessToken
 		return nil, err
 	}
 
-	fmt.Println("ok111")
-
 	var wg conc.WaitGroup
 	languageMaps := entity.NewLanguage()
 
@@ -111,7 +106,6 @@ func (s *GitHubSerivce) GetUserUseLanguagesByID(ctx context.Context, accessToken
 			if err != nil {
 				return
 			}
-			fmt.Println("ok222")
 
 			for k, v := range *language {
 				languageMaps.Store(k, v)

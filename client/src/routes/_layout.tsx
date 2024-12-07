@@ -15,9 +15,6 @@ import { Search } from "lucide-react";
 
 export const Route = createFileRoute("/_layout")({
   component: LayoutComponent,
-  pendingComponent: () => {
-    return <div>Loading...</div>;
-  },
   errorComponent: () => {
     return <div>Error</div>;
   },

@@ -51,11 +51,13 @@ export function AppSidebar({ user, rooms }: { user: User; rooms: Room[] }) {
           <SidebarGroupLabel>参加中のルーム</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {rooms.map((room) => (
-                <SidebarLink to={room.roomId} key={room.roomId}>
-                  {room.name}
-                </SidebarLink>
-              ))}
+              {rooms.length === 0
+                ? ""
+                : rooms.map((room) => (
+                    <SidebarLink to={room.roomId} key={room.roomId}>
+                      {room.name}
+                    </SidebarLink>
+                  ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

@@ -22,7 +22,11 @@ function GitHubCallback() {
         setLoginStatus(false);
         localStorage.setItem("code", response.data.code);
         localStorage.setItem("userId", response.data.id);
-        router.navigate({ to: "/form" });
+        if (response.data.isNewUser) {
+          router.navigate({ to: "/form" });
+        } else {
+          router.navigate({ to: "/home" });
+        }
       } catch (error) {
         console.error("Login Error: ", error);
       }

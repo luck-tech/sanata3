@@ -17,13 +17,6 @@ import TagsInput from "@/components/TagsInput";
 import { useMutation } from "@tanstack/react-query";
 import api from "@/api/axiosInstance";
 
-// type PostRoom = {
-//   aimSkills: [string];
-//   createdBy: string;
-//   description: string;
-//   name: string;
-// };
-
 const formSchema = z.object({
   name: z
     .string()
@@ -56,18 +49,16 @@ function RouteComponent() {
 
   const mutation = useMutation({
     mutationFn: async (room: z.infer<typeof formSchema>) => {
-      console.log("クリック");
       const token = localStorage.getItem("code");
-      const res = await api.post("/v1/rooms", room, { //なおしといて @haru-036
+      const res = await api.post("/v1/rooms", room, {
         headers: {
           Authorization: token,
         },
       });
       return res.data;
     },
-    onSuccess: () => {
-      console.log("success");
-      navigate({ to: "/home" });
+    onSuccess: (data) => {
+      navigate({ to: "/$roomId", params: { roomId: data.roomId } });
     },
     onError: (error) => {
       console.error(error);
@@ -77,9 +68,8 @@ function RouteComponent() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const dataToSend = {
       ...values,
-      createdBy: localStorage.getItem("userId"), // createdByを追加
+      createdBy: localStorage.getItem("userId"),
     };
-    console.log(dataToSend);
 
     mutation.mutate(dataToSend);
   }

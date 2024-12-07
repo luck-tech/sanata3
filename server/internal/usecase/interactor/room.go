@@ -169,6 +169,8 @@ func (i *Room) Create(ctx context.Context, param CreateRoomParam) (*GetRoomResul
 		return nil, err
 	}
 
+	// TODO: Neptune
+
 	return i.GetByID(ctx, roomID)
 }
 
@@ -208,6 +210,8 @@ func (i *Room) Update(ctx context.Context, param UpdateRoomParam) (*GetRoomResul
 		return nil, err
 	}
 
+	// TODO: Neptune
+
 	return i.GetByID(ctx, param.RoomID)
 }
 
@@ -217,6 +221,8 @@ func (i *Room) Join(ctx context.Context, roomID string) (*GetRoomResult, error) 
 		return nil, err
 	}
 
+	// TODO: Neptune
+
 	return i.GetByID(ctx, roomID)
 }
 
@@ -225,6 +231,8 @@ func (i *Room) Leave(ctx context.Context, roomID string) error {
 	if err := i._roomMember.Leave(ctx, roomID, userID); err != nil {
 		return err
 	}
+
+	// TODO: Neptune
 
 	return nil
 }
@@ -252,6 +260,8 @@ func (i *Room) Delete(ctx context.Context, roomID string) error {
 	if err := i._room.Delete(ctx, roomID); err != nil {
 		return err
 	}
+
+	// TODO: Neptune
 
 	return nil
 }

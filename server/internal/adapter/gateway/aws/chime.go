@@ -12,6 +12,7 @@ type ChimeClient struct {
 	client *chimesdkmeetings.Client
 }
 
+// TODO: Chime: DynamoDBと同様にdriver/awsのNewAWSConfig()を使ってconfigを取得するようにする
 func NewChimeClient() (*ChimeClient, error) {
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-east-1"))
 	if err != nil {

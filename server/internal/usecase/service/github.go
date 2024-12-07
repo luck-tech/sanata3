@@ -56,6 +56,9 @@ func (g *GitHub) Login(ctx context.Context, code string) (*LoginGitHubResult, er
 		if err := g.repo.CreateUser(ctx, newUser); err != nil {
 			return nil, err
 		}
+
+		// TODO: Neptune
+	
 	} else {
 		user.Name = userInfo.Login
 		user.Icon = userInfo.AvatarURL

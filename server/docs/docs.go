@@ -109,7 +109,7 @@ const docTemplate = `{
                 "operationId": "CreateRoom",
                 "parameters": [
                     {
-                        "description": "LoginGitHubRequest",
+                        "description": "create room request",
                         "name": "b",
                         "in": "body",
                         "required": true,
@@ -167,6 +167,185 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/controller.GetRoomResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Update Room",
+                "operationId": "UpdateRoom",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "roomID path param",
+                        "name": "roomId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "create room request",
+                        "name": "b",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.UpdateRoomRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.CreateRoomResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Delete Room",
+                "operationId": "DeleteRoom",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "roomID path param",
+                        "name": "roomId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.DeleteRoomResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms/{roomId}/members": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Join Room",
+                "operationId": "JoinRoom",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "roomID path param",
+                        "name": "roomId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.JoinRoomResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Leave Room",
+                "operationId": "LeaveRoom",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "roomID path param",
+                        "name": "roomId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.LeaveRoomResponse"
                         }
                     },
                     "400": {
@@ -360,10 +539,27 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
+                "members": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.DisplayUser"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
                 "ownerId": {
                     "type": "string"
                 },
                 "roomId": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.DeleteRoomResponse": {
+            "type": "object",
+            "properties": {
+                "string": {
                     "type": "string"
                 }
             }
@@ -385,6 +581,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/entity.DisplayUser"
                     }
+                },
+                "name": {
+                    "type": "string"
                 },
                 "ownerId": {
                     "type": "string"
@@ -423,6 +622,43 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/entity.Skill"
                     }
+                }
+            }
+        },
+        "controller.JoinRoomResponse": {
+            "type": "object",
+            "properties": {
+                "aimTags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Skill"
+                    }
+                },
+                "description": {
+                    "type": "string"
+                },
+                "members": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.DisplayUser"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "ownerId": {
+                    "type": "string"
+                },
+                "roomId": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.LeaveRoomResponse": {
+            "type": "object",
+            "properties": {
+                "string": {
+                    "type": "string"
                 }
             }
         },
@@ -470,6 +706,26 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
+                }
+            }
+        },
+        "controller.UpdateRoomRequest": {
+            "type": "object",
+            "properties": {
+                "aimSkills": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "roomID": {
+                    "type": "string"
                 }
             }
         },

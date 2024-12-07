@@ -63,7 +63,7 @@ func GetUser(i *interactor.User) echo.HandlerFunc {
 			return echo.ErrBadRequest
 		}
 
-		result, used, want, err := i.GetUser(ctx, reqQuery.UserID)
+		result, used, want, err := i.Get(ctx, reqQuery.UserID)
 		if err != nil {
 			slog.Error("failed to login github", "error", err, "requestID", contexts.GetRequestID(ctx))
 			return echo.ErrInternalServerError
@@ -137,7 +137,7 @@ func UpdateUser(i *interactor.User) echo.HandlerFunc {
 			return echo.ErrBadRequest
 		}
 
-		result, used, want, err := i.UpdateUser(ctx, interactor.UpdateUserParam{
+		result, used, want, err := i.Update(ctx, interactor.UpdateUserParam{
 			UserID:          requBody.UserID,
 			Description:     requBody.Description,
 			WantLearnSkills: requBody.WantLearnSkills,

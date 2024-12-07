@@ -46,6 +46,9 @@ func NewContainer() error {
 		{constructor: router.NewDI, opts: noOpts},
 		{constructor: driver.NewDB, opts: noOpts},
 		{constructor: driver.NewBun, opts: as[bun.IDB]()},
+		{constructor: driver.NewAWSConfig, opts: noOpts},
+		{constructor: driver.NewDynamoDB, opts: noOpts},
+
 		{constructor: gateway.NewRepository, opts: as[dai.DataAccessInterface]()},
 	}
 

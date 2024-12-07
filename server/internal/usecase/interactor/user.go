@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/murasame29/go-httpserver-template/internal/entity"
+	"github.com/murasame29/go-httpserver-template/internal/framework/contexts"
+	"github.com/murasame29/go-httpserver-template/internal/framework/serrors"
 	"github.com/murasame29/go-httpserver-template/internal/usecase/service"
 )
 
@@ -31,8 +33,8 @@ func NewUser(
 	}
 }
 
-func (u *User) GetUser(ctx context.Context, id string) (*entity.User, []entity.Skill, []entity.Skill, error) {
-	user, found, err := u._user.GetUser(ctx, id)
+func (u *User) Get(ctx context.Context, id string) (*entity.User, []entity.Skill, []entity.Skill, error) {
+	user, found, err := u._user.GetInfo(ctx, id)
 	if err != nil {
 		return nil, nil, nil, err
 	}
@@ -74,11 +76,28 @@ type UpdateUserParam struct {
 	WantLearnSkills []string
 }
 
-func (u *User) UpdateUser(ctx context.Context, param UpdateUserParam) (*entity.User, []entity.Skill, []entity.Skill, error) {
-	if err := u._user.UpdateUser(ctx, &entity.User{
-		ID:          param.UserID,
-		Description: param.Description,
-	}); err != nil {
+func (u *User) Update(ctx context.Context, param UpdateUserParam) (*entity.User, []entity.Skill, []entity.Skill, error) {
+	userID := contexts.GetUserID(ctx)
+	user, found, err := u._user.Get(ctx, param.UserID)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	if !found {
+		return nil, nil, nil, serrors.ErrUserNotFound
+	}
+
+	if user.ID != userID {
+		return nil, nil, nil, serrors.ErrPermissionNotFound
+	}
+
+	newUser := user
+
+	if param.Description != "" {
+		newUser.Description = param.Description
+	}
+
+	if err := u._user.Update(ctx, newUser); err != nil {
 		return nil, nil, nil, err
 	}
 
@@ -100,5 +119,5 @@ func (u *User) UpdateUser(ctx context.Context, param UpdateUserParam) (*entity.U
 		return nil, nil, nil, err
 	}
 
-	return u.GetUser(ctx, param.UserID)
+	return u.Get(ctx, param.UserID)
 }

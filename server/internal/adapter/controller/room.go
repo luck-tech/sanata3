@@ -24,6 +24,7 @@ func (r GetRoomRequest) Validate() error {
 
 type GetRoomResponse struct {
 	RoomID      string               `json:"roomId"`
+	Name        string               `json:"name"`
 	Description string               `json:"description"`
 	OwnerID     string               `json:"ownerId"`
 	AimTags     []entity.Skill       `json:"aimTags"`
@@ -63,6 +64,7 @@ func GetRoom(i *interactor.Room) echo.HandlerFunc {
 
 		return c.JSON(http.StatusOK, GetRoomResponse{
 			RoomID:      result.Room.ID,
+			Name:        result.Room.Name,
 			Description: result.Room.Description,
 			OwnerID:     result.Room.OwnerID,
 			AimTags:     result.AimTags,
@@ -99,6 +101,7 @@ func ListRoom(i *interactor.Room) echo.HandlerFunc {
 		for _, room := range result.Rooms {
 			rooms = append(rooms, GetRoomResponse{
 				RoomID:      room.Room.ID,
+				Name:        room.Room.Name,
 				Description: room.Room.Description,
 				OwnerID:     room.Room.OwnerID,
 				AimTags:     room.AimTags,
@@ -132,10 +135,12 @@ func (r CreateRoomRequest) Validate() error {
 }
 
 type CreateRoomResponse struct {
-	RoomID      string         `json:"roomId"`
-	Description string         `json:"description"`
-	OwnerID     string         `json:"ownerId"`
-	AimTags     []entity.Skill `json:"aimTags"`
+	RoomID      string               `json:"roomId"`
+	Name        string               `json:"name"`
+	Description string               `json:"description"`
+	OwnerID     string               `json:"ownerId"`
+	AimTags     []entity.Skill       `json:"aimTags"`
+	Members     []entity.DisplayUser `json:"members"`
 }
 
 // googleLogin godoc
@@ -171,6 +176,79 @@ func CreateRoom(i *interactor.Room) echo.HandlerFunc {
 
 		return c.JSON(http.StatusOK, CreateRoomResponse{
 			RoomID:      result.Room.ID,
+			Name:        result.Room.Name,
+			Description: result.Room.Description,
+			OwnerID:     result.Room.OwnerID,
+			AimTags:     result.AimTags,
+			Members:     result.Members,
+		})
+	}
+}
+
+type UpdateRoomRequest struct {
+	RoomID      string   `param:"roomId"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	AimSkills   []string `json:"aimSkills"`
+}
+
+func (r UpdateRoomRequest) Validate() error {
+	if len(r.Name) == 0 {
+		return errors.New("name is required")
+	}
+
+	return nil
+}
+
+type UpdateRoomResponse struct {
+	RoomID      string               `json:"roomId"`
+	Name        string               `json:"name"`
+	Description string               `json:"description"`
+	OwnerID     string               `json:"ownerId"`
+	AimTags     []entity.Skill       `json:"aimTags"`
+	Members     []entity.DisplayUser `json:"members"`
+}
+
+// googleLogin godoc
+// @Summary  Update Room
+// @ID       UpdateRoom
+// @Tags     Room
+// @Accept   json
+// @Produce  json
+// @Param 	 roomId		path 		 string  true "roomID path param"
+// @Param 	 b			 body 		 UpdateRoomRequest  true "create room request"
+// @Success  200  {object}  CreateRoomResponse
+// @Failure  400  {object}  echo.HTTPError
+// @Failure  500  {object}  echo.HTTPError
+// @Router   /rooms/{roomId} [put]
+func UpdateRoom(i *interactor.Room) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		ctx := contexts.ConvertContext(c)
+		var reqBody UpdateRoomRequest
+		if err := c.Bind(&reqBody); err != nil {
+			slog.Error("failed to bind request body", "error", err, "requestID", contexts.GetRequestID(ctx))
+			return echo.ErrBadRequest
+		}
+
+		if err := reqBody.Validate(); err != nil {
+			slog.Error("failed to validate request body", "error", err, "requestID", contexts.GetRequestID(ctx))
+			return echo.ErrBadRequest
+		}
+
+		result, err := i.Update(ctx, interactor.UpdateRoomParam{
+			RoomID:      reqBody.RoomID,
+			Name:        reqBody.Name,
+			Description: reqBody.Description,
+			AimSkills:   reqBody.AimSkills,
+		})
+		if err != nil {
+			slog.Error("failed to login github", "error", err, "requestID", contexts.GetRequestID(ctx))
+			return echo.ErrInternalServerError
+		}
+
+		return c.JSON(http.StatusOK, UpdateRoomResponse{
+			RoomID:      result.Room.ID,
+			Name:        result.Room.Name,
 			Description: result.Room.Description,
 			OwnerID:     result.Room.OwnerID,
 			AimTags:     result.AimTags,
@@ -191,8 +269,8 @@ type DeleteRoomResponse struct {
 }
 
 // googleLogin godoc
-// @Summary  Leave Room
-// @ID       LeaveRoom
+// @Summary  Delete Room
+// @ID       DeleteRoom
 // @Tags     Room
 // @Accept   json
 // @Produce  json

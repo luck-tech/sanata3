@@ -28,6 +28,17 @@ func (s *RoomRepository) CreateRoom(ctx context.Context, room *entity.Room) erro
 	return nil
 }
 
+func (s *RoomRepository) UpdateRoom(ctx context.Context, room *entity.Room) error {
+	_, err := s.db.NewUpdate().
+		Model(room).
+		WherePK().
+		Exec(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (s *RoomRepository) GetRoom(ctx context.Context, roomID string) (*entity.Room, bool, error) {
 	var room entity.Room
 	err := s.db.NewSelect().

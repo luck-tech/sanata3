@@ -44,7 +44,7 @@ func (g *GitHub) Login(ctx context.Context, code string) (*LoginGitHubResult, er
 	if !found {
 		newUser := &entity.User{
 			ID:    string(rune(userInfo.ID)),
-			Email: user.Email,
+			Email: userInfo.Email,
 			Name:  userInfo.Login,
 			Icon:  userInfo.AvatarURL,
 		}

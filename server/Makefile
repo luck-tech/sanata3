@@ -23,6 +23,5 @@ new-migrate:
 migrate:
 	go run cmd/migrate/main.go -e .env.migrate -f cmd/migrate/source
 
-
 swag:
 	swag init --dir cmd/app/ --parseDependencyLevel 10 

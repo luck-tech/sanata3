@@ -40,6 +40,10 @@ type config struct {
 		DBName   string `env:"DB_NAME"`
 		SSLMode  string `env:"DB_SSLMODE" envDefault:"disable"`
 	}
+
+	Neptune struct {
+		Endpoint string `env:"NEPTUNE_ENDPOINT"`
+	}
 }
 
 // Config は読み込まれた設定を保持します。

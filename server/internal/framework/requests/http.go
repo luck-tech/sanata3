@@ -13,7 +13,7 @@ import (
 func RequestWithAccessToken[T any](ctx context.Context, endpoint, accessToken string) (*T, error) {
 	fmt.Println("token:", accessToken, "endpoint", endpoint)
 	tc := oauth2.NewClient(ctx, oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: accessToken},
+		&oauth2.Token{AccessToken: accessToken, TokenType: "Bearer"},
 	))
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint, nil)

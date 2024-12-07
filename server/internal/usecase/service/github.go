@@ -26,6 +26,7 @@ type LoginGitHubResult struct {
 	UserID       string
 	UserName     string
 	Icon         string
+	IsNewUser    bool
 }
 
 func (g *GitHub) Login(ctx context.Context, code string) (*LoginGitHubResult, error) {
@@ -33,21 +34,19 @@ func (g *GitHub) Login(ctx context.Context, code string) (*LoginGitHubResult, er
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("ok")
-
+	isNewUser := false
 	fmt.Println(token)
 
 	userInfo, err := g.repo.GetUserByToken(ctx, token.AccessToken)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("ok")
-
 	user, found, err := g.repo.GetUser(ctx, strconv.Itoa(userInfo.ID))
 	if err != nil {
 		return nil, err
 	}
 	if !found {
+		isNewUser = true
 		newUser := &entity.User{
 			ID:    strconv.Itoa(userInfo.ID),
 			Email: userInfo.Email,
@@ -64,13 +63,11 @@ func (g *GitHub) Login(ctx context.Context, code string) (*LoginGitHubResult, er
 			return nil, err
 		}
 	}
-	fmt.Println("ok")
 
 	user, _, err = g.repo.GetUser(ctx, strconv.Itoa(userInfo.ID))
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("ok")
 
 	return &LoginGitHubResult{
 		AccessToken:  token.AccessToken,
@@ -78,6 +75,7 @@ func (g *GitHub) Login(ctx context.Context, code string) (*LoginGitHubResult, er
 		UserID:       user.ID,
 		UserName:     user.Name,
 		Icon:         user.Icon,
+		IsNewUser:    isNewUser,
 	}, nil
 }
 

@@ -3,18 +3,18 @@ package router
 import (
 	"net/http"
 
-	"github.com/labstack/echo/v4/middleware"
+	//"github.com/labstack/echo/v4/middleware"
 
 	"github.com/labstack/echo/v4"
 	"github.com/murasame29/go-httpserver-template/internal/adapter/controller"
-	// "github.com/murasame29/go-httpserver-template/internal/adapter/middleware"
+	 "github.com/murasame29/go-httpserver-template/internal/adapter/middleware"
 )
 
 // NewEcho は、echo/v4 を利用した http.Handlerを返す関数です。
 func NewEcho(interactors *di) http.Handler {
 	engine := echo.New()
 
-	engine.Use(middleware.CORS())
+//	engine.Use(middleware.CORS())
 
 	engine.GET("/healthz", func(c echo.Context) error {
 		return c.String(200, "OK")
@@ -22,7 +22,7 @@ func NewEcho(interactors *di) http.Handler {
 
 	engine.Use(
 		middleware.RequestID(),
-		middleware.CORS(),
+		middleware.AllowAllOrigins(),
 	)
 
 	loginRoute := engine.Group("/login")
@@ -31,7 +31,7 @@ func NewEcho(interactors *di) http.Handler {
 	}
 
 	v1Route := engine
-	// v1Route.Use(middleware.Auth(interactors.login))
+	 v1Route.Use(middleware.Auth(interactors.login))
 
 	{
 		usersRoute := v1Route.Group("/users")

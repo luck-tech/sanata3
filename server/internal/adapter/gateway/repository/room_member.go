@@ -27,7 +27,7 @@ func (r *RoomMemberRepository) GetRoomMembers(ctx context.Context, roomID string
 
 func (r *RoomMemberRepository) GetRoomMembersByRoomIDs(ctx context.Context, roomIDs []string) ([]entity.RoomMember, error) {
 	var roomMembers []entity.RoomMember
-	if err := r.db.NewSelect().Model(&roomMembers).Where("room_id IN (?)", roomIDs).Scan(ctx, &roomMembers); err != nil {
+	if err := r.db.NewSelect().Model(&roomMembers).Where("room_id IN (?)", bun.In(roomIDs)).Scan(ctx, &roomMembers); err != nil {
 		return nil, err
 	}
 

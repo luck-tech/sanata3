@@ -49,7 +49,7 @@ func (s *UserRepository) GetUsers(ctx context.Context, userIDs []string) ([]enti
 	var users []entity.User
 	err := s.db.NewSelect().
 		Model(&users).
-		Where("id IN (?)", userIDs).
+		Where("id IN (?)", bun.In(userIDs)).
 		Scan(ctx, &users)
 
 	if err != nil {

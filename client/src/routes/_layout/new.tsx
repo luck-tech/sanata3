@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -14,9 +14,18 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import TagsInput from "@/components/TagsInput";
+import { useMutation } from "@tanstack/react-query";
+import api from "@/api/axiosInstance";
+
+// type PostRoom = {
+//   aimSkills: [string];
+//   createdBy: string;
+//   description: string;
+//   name: string;
+// };
 
 const formSchema = z.object({
-  roomname: z
+  name: z
     .string()
     .min(1, "ルーム名は必須です")
     .max(50, "ルーム名は50文字以内で入力してください"),
@@ -24,7 +33,7 @@ const formSchema = z.object({
     .string()
     .min(1, "概要は必須です")
     .max(200, "概要は200文字以内で入力してください"),
-  tags: z
+  aimSkills: z
     .array(z.string())
     .min(1, "技術・資格は必須です")
     .max(3, "技術・資格は3つまでです"),
@@ -38,14 +47,41 @@ function RouteComponent() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      roomname: "",
+      name: "",
       description: "",
-      tags: [],
+      aimSkills: [],
+    },
+  });
+  const navigate = useNavigate();
+
+  const mutation = useMutation({
+    mutationFn: async (room: z.infer<typeof formSchema>) => {
+      console.log("クリック");
+      const token = localStorage.getItem("code");
+      const res = await api.post("/rooms", room, {
+        headers: {
+          Authorization: token,
+        },
+      });
+      return res.data;
+    },
+    onSuccess: () => {
+      console.log("success");
+      navigate({ to: "/home" });
+    },
+    onError: (error) => {
+      console.error(error);
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const dataToSend = {
+      ...values,
+      createdBy: localStorage.getItem("userId"), // createdByを追加
+    };
+    console.log(dataToSend);
+
+    mutation.mutate(dataToSend);
   }
 
   return (
@@ -55,7 +91,7 @@ function RouteComponent() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
-            name="roomname"
+            name="name"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-base">ルーム名</FormLabel>
@@ -81,7 +117,7 @@ function RouteComponent() {
           />
           <FormField
             control={form.control}
-            name="tags"
+            name="aimSkills"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-base">
@@ -98,7 +134,9 @@ function RouteComponent() {
             )}
           />
           <div className="flex justify-end">
-            <Button type="submit">作成</Button>
+            <Button type="submit" disabled={mutation.isPending}>
+              作成
+            </Button>
           </div>
         </form>
       </Form>

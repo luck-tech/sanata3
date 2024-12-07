@@ -14,7 +14,7 @@ func Auth(login *interactor.Login) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			authHeader := c.Request().Header.Get("Authorization")
-			if len(authHeader) != 0 {
+			if len(authHeader) == 0 {
 				slog.Error("auth error. required auth header")
 				return echo.ErrUnauthorized
 			}

@@ -61,7 +61,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/rooms": {
+        "/v1/rooms": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -140,7 +140,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/rooms/{roomId}": {
+        "/v1/rooms/{roomId}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -277,7 +277,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/rooms/{roomId}/members": {
+        "/v1/rooms/{roomId}/members": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -363,7 +363,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/skilltags": {
+        "/v1/skilltags": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -410,7 +410,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/{userId}": {
+        "/v1/users/{userId}": {
             "get": {
                 "consumes": [
                     "application/json"

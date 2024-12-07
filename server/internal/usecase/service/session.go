@@ -39,6 +39,8 @@ func (s *Session) UpsertSession(ctx context.Context, userID, accessToken, refres
 		if err := s.repo.CreateSeseion(ctx, newSession); err != nil {
 			return "", err
 		}
+
+		session.ID = newSession.ID
 	} else {
 		session.AccessToken = accessToken
 		session.RefreshToken = refreshToken

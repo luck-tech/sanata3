@@ -18,7 +18,7 @@ func NewEcho(interactors *di) http.Handler {
 
 	engine.Use(
 		middleware.RequestID(),
-		middleware.SetupCORS(),
+		middleware.AllowAllOrigins(),
 	)
 
 	loginRoute := engine.Group("/login")

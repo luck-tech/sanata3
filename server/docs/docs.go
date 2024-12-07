@@ -693,6 +693,9 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
+                "isNewUser": {
+                    "type": "boolean"
+                },
                 "name": {
                     "type": "string"
                 }

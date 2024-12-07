@@ -28,9 +28,11 @@ func (s *Session) UpsertSession(ctx context.Context, userID, accessToken, refres
 		return "", err
 	}
 
+	sessionID := uuid.NewString()
+
 	if !found {
 		newSession := &entity.Session{
-			ID:           uuid.NewString(),
+			ID:           sessionID,
 			UserID:       userID,
 			AccessToken:  accessToken,
 			RefreshToken: refreshToken,
@@ -40,15 +42,15 @@ func (s *Session) UpsertSession(ctx context.Context, userID, accessToken, refres
 			return "", err
 		}
 
-		session.ID = newSession.ID
 	} else {
 		session.AccessToken = accessToken
 		session.RefreshToken = refreshToken
+		sessionID = session.ID
 
 		if err := s.repo.UpdateSession(ctx, session); err != nil {
 			return "", err
 		}
 	}
 
-	return session.ID, nil
+	return sessionID, nil
 }

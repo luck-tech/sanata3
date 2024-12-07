@@ -120,6 +120,8 @@ definitions:
         type: string
       id:
         type: string
+      isNewUser:
+        type: boolean
       name:
         type: string
     type: object

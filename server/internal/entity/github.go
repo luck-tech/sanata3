@@ -114,6 +114,13 @@ type Language struct {
 	mu    sync.Mutex
 }
 
+func NewLanguage() *Language {
+	return &Language{
+		Count: make(map[string]int),
+		mu:    sync.Mutex{},
+	}
+}
+
 func (l *Language) Store(key string, value int) {
 	l.mu.Lock()
 	defer l.mu.Unlock()

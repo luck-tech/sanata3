@@ -21,7 +21,7 @@ function GitHubCallback() {
         const response = await api.post("/login/github", { code });
         console.log(response);
         setLoginStatus(false);
-        router.navigate({ to: "/home" });
+        router.navigate({ to: "/form" });
       } catch (error) {
         console.error("Login Error: ", error);
       }

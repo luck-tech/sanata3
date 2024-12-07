@@ -56,8 +56,8 @@ func NewEcho(interactors *di) http.Handler {
 				roomRoute.PUT("", controller.UpdateRoom(interactors.room))    // figma: room-description
 				roomRoute.DELETE("", controller.DeleteRoom(interactors.room)) // figma: room-description
 
-				roomRoute.POST("/members ", controller.JoinRoom(interactors.room))    // figma: room-description
-				roomRoute.DELETE("/members ", controller.LeaveRoom(interactors.room)) // figma: room-description
+				roomRoute.POST("/members", controller.JoinRoom(interactors.room))    // figma: room-description
+				roomRoute.DELETE("/members", controller.LeaveRoom(interactors.room)) // figma: room-description
 
 				roomRoute.GET("/chat", nil)  // figma: room
 				roomRoute.POST("/chat", nil) // figma: room

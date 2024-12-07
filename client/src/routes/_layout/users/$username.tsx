@@ -16,11 +16,10 @@ function RouteComponent() {
   const [isEditingUsingTags, setIsEditingUsingTags] = useState(false);
   const [userName, setUserName] = useState("");
   const [avatarIcon, setAvatarIcon] = useState("");
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("code");
 
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    const token = localStorage.getItem("code");
-
     const fetchUserData = async () => {
       try {
         const response = await api.get(`/v1/users/${userId}`, {
@@ -46,6 +45,30 @@ function RouteComponent() {
     fetchUserData();
   }, []);
 
+  const updateUserSkills = async () => {
+    try {
+      await api.put(
+        `/v1/users/${userId}`,
+        {
+          userID: userId,
+          usedSkills: selectedUsingTags,
+          wantLearnSkills: selectedWantTags,
+        },
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+
+      console.log("User skills updated successfully");
+      setIsEditingWantTags(false);
+      setIsEditingUsingTags(false);
+    } catch (error) {
+      console.error("Failed to update user skills:", error);
+    }
+  };
+
   return (
     <div className="flex flex-col justify-center items-center gap-12 min-h-[calc(100vh-64px)] max-w-screen-sm w-full mx-auto px-6 py-8">
       <div className="flex gap-8 items-center w-full">
@@ -62,7 +85,10 @@ function RouteComponent() {
             <Button
               variant={!isEditingWantTags ? "secondary" : "default"}
               size={"sm"}
-              onClick={() => setIsEditingWantTags((prev) => !prev)}
+              onClick={() => {
+                if (isEditingWantTags) updateUserSkills();
+                setIsEditingWantTags((prev) => !prev);
+              }}
             >
               {isEditingWantTags ? "更新" : "編集"}
             </Button>
@@ -79,7 +105,10 @@ function RouteComponent() {
             <Button
               variant={!isEditingUsingTags ? "secondary" : "default"}
               size={"sm"}
-              onClick={() => setIsEditingUsingTags((prev) => !prev)}
+              onClick={() => {
+                if (isEditingUsingTags) updateUserSkills();
+                setIsEditingUsingTags((prev) => !prev);
+              }}
             >
               {isEditingUsingTags ? "更新" : "編集"}
             </Button>

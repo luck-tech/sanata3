@@ -10,16 +10,13 @@ import {
 } from "@/components/ui/sidebar";
 import { User } from "@/types/user";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Outlet, createFileRoute } from "@tanstack/react-router";
+import { Navigate, Outlet, createFileRoute } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 
 export const Route = createFileRoute("/_layout")({
   component: LayoutComponent,
-  pendingComponent: () => {
-    return <div>Loading...</div>;
-  },
   errorComponent: () => {
-    return <div>Error</div>;
+    return <Navigate to="/" />;
   },
 });
 

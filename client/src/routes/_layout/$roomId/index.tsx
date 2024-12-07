@@ -1,22 +1,60 @@
+import api from "@/api/axiosInstance";
 import ChatCard from "@/components/chatCard";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { UserItem } from "@/components/userItem";
-import { createFileRoute } from "@tanstack/react-router";
-import { Headphones, Send } from "lucide-react";
+import { Room } from "@/types/room";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { DoorClosed, Headphones, Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-
-import { useMeetingManager } from "amazon-chime-sdk-component-library-react";
-import { MeetingSessionConfiguration } from "amazon-chime-sdk-js";
 
 export const Route = createFileRoute("/_layout/$roomId/")({
   component: RouteComponent,
+  pendingComponent: () => {
+    return <div className="px-6 py-5 text-lg font-bold">Loading...</div>;
+  },
+  errorComponent: () => {
+    return <div className="px-6 py-5 text-lg font-bold">Error</div>;
+  },
 });
 
 function RouteComponent() {
   const [text, setText] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const meetingManager = useMeetingManager();
+  const { roomId }: { roomId: string } = Route.useParams();
+  const navigate = useNavigate();
+
+  const { data } = useSuspenseQuery({
+    queryKey: ["room", roomId],
+    queryFn: async (): Promise<Room> => {
+      const token = localStorage.getItem("code");
+      const res = await api.get(`/v1/rooms/${roomId}`, {
+        headers: {
+          Authorization: token,
+        },
+      });
+      return res.data;
+    },
+  });
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const token = localStorage.getItem("code");
+      const res = await api.delete(`/v1/rooms/${roomId}/members`, {
+        headers: {
+          Authorization: token,
+        },
+      });
+      return res.data;
+    },
+    onSuccess: () => {
+      navigate({ to: "/home" });
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -39,35 +77,35 @@ function RouteComponent() {
     }
   }, [text]);
 
-  const joinMeeting = async () => {
-    // Fetch the meeting and attendee data from your server application
-    const response = await fetch("/my-server");
-    const data = await response.json();
+  // const joinMeeting = async () => {
+  //   // Fetch the meeting and attendee data from your server application
+  //   const response = await fetch("/my-server");
+  //   const data = await response.json();
 
-    // Initalize the `MeetingSessionConfiguration`
-    const meetingSessionConfiguration = new MeetingSessionConfiguration(
-      data.Meeting,
-      data.Attendee
-    );
+  //   // Initalize the `MeetingSessionConfiguration`
+  //   const meetingSessionConfiguration = new MeetingSessionConfiguration(
+  //     data.Meeting,
+  //     data.Attendee
+  //   );
 
-    // Create a `MeetingSession` using `join()` function with the `MeetingSessionConfiguration`
-    await meetingManager.join(meetingSessionConfiguration);
+  //   // Create a `MeetingSession` using `join()` function with the `MeetingSessionConfiguration`
+  //   await meetingManager.join(meetingSessionConfiguration);
 
-    // At this point you could let users setup their devices, or by default
-    // the SDK will select the first device in the list for the kind indicated
-    // by `deviceLabels` (the default value is DeviceLabels.AudioAndVideo)
+  //   // At this point you could let users setup their devices, or by default
+  //   // the SDK will select the first device in the list for the kind indicated
+  //   // by `deviceLabels` (the default value is DeviceLabels.AudioAndVideo)
 
-    // Start the `MeetingSession` to join the meeting
-    await meetingManager.start();
-  };
+  //   // Start the `MeetingSession` to join the meeting
+  //   await meetingManager.start();
+  // };
 
   return (
     <div className="px-6 py-5 flex flex-col h-[calc(100vh-64px)]">
       <div className="flex flex-col md:flex-row gap-4 h-full">
         <div className="flex flex-1 flex-col gap-4">
           <div className="flex justify-between items-center w-full">
-            <h2 className="text-lg font-bold">ルーム名</h2>
-            <Button size={"icon"} variant={"outline"} onClick={joinMeeting}>
+            <h2 className="text-lg font-bold">{data.name}</h2>
+            <Button size={"icon"} variant={"outline"}>
               <Headphones />
             </Button>
           </div>
@@ -92,22 +130,33 @@ function RouteComponent() {
             </Button>
           </div>
         </div>
-        <div className="w-full md:w-56 border-l pl-4">
+        <div className="w-full md:w-56 border-l pl-4 h-full flex flex-col justify-between">
           <div>
-            <h3 className="font-semibold pb-2">概要</h3>
-            <p className="text-muted-foreground text-sm">
-              ほんとうにそのいるかのかたちのおかしいことは、二人のうしろで聞こえました。鳥捕りは、だまって見ていました。青年はなんとも言えずさびしい気がして、そっちに祈ってくれました。
-            </p>
-          </div>
-          <div className="py-6">
-            <h3 className="font-semibold pb-2">メンバー</h3>
-            <div className="flex flex-col gap-2">
-              <UserItem />
-              <UserItem />
-              <UserItem />
-              <UserItem />
+            <div>
+              <h3 className="font-semibold pb-2">概要</h3>
+              <p className="text-muted-foreground text-sm">
+                {data.description}
+              </p>
+            </div>
+            <div className="py-6">
+              <h3 className="font-semibold pb-2">メンバー</h3>
+              <div className="flex flex-col gap-2">
+                {data.members.map((member) => (
+                  <UserItem
+                    user={{ name: member.name, icon: member.icon }}
+                    key={member.id}
+                  />
+                ))}
+              </div>
             </div>
           </div>
+          <Button
+            variant={"ghost"}
+            size={"sm"}
+            onClick={() => mutation.mutate()}
+          >
+            <DoorClosed /> このルームから抜ける
+          </Button>
         </div>
       </div>
     </div>

@@ -24,6 +24,7 @@ func (r GetRoomRequest) Validate() error {
 
 type GetRoomResponse struct {
 	RoomID      string               `json:"roomId"`
+	Name        string               `json:"name"`
 	Description string               `json:"description"`
 	OwnerID     string               `json:"ownerId"`
 	AimTags     []entity.Skill       `json:"aimTags"`
@@ -63,6 +64,7 @@ func GetRoom(i *interactor.Room) echo.HandlerFunc {
 
 		return c.JSON(http.StatusOK, GetRoomResponse{
 			RoomID:      result.Room.ID,
+			Name:        result.Room.Name,
 			Description: result.Room.Description,
 			OwnerID:     result.Room.OwnerID,
 			AimTags:     result.AimTags,
@@ -99,6 +101,7 @@ func ListRoom(i *interactor.Room) echo.HandlerFunc {
 		for _, room := range result.Rooms {
 			rooms = append(rooms, GetRoomResponse{
 				RoomID:      room.Room.ID,
+				Name:        room.Room.Name,
 				Description: room.Room.Description,
 				OwnerID:     room.Room.OwnerID,
 				AimTags:     room.AimTags,
@@ -133,6 +136,7 @@ func (r CreateRoomRequest) Validate() error {
 
 type CreateRoomResponse struct {
 	RoomID      string               `json:"roomId"`
+	Name        string               `json:"name"`
 	Description string               `json:"description"`
 	OwnerID     string               `json:"ownerId"`
 	AimTags     []entity.Skill       `json:"aimTags"`
@@ -172,6 +176,7 @@ func CreateRoom(i *interactor.Room) echo.HandlerFunc {
 
 		return c.JSON(http.StatusOK, CreateRoomResponse{
 			RoomID:      result.Room.ID,
+			Name:        result.Room.Name,
 			Description: result.Room.Description,
 			OwnerID:     result.Room.OwnerID,
 			AimTags:     result.AimTags,
@@ -197,6 +202,7 @@ func (r UpdateRoomRequest) Validate() error {
 
 type UpdateRoomResponse struct {
 	RoomID      string               `json:"roomId"`
+	Name        string               `json:"name"`
 	Description string               `json:"description"`
 	OwnerID     string               `json:"ownerId"`
 	AimTags     []entity.Skill       `json:"aimTags"`
@@ -242,6 +248,7 @@ func UpdateRoom(i *interactor.Room) echo.HandlerFunc {
 
 		return c.JSON(http.StatusOK, UpdateRoomResponse{
 			RoomID:      result.Room.ID,
+			Name:        result.Room.Name,
 			Description: result.Room.Description,
 			OwnerID:     result.Room.OwnerID,
 			AimTags:     result.AimTags,

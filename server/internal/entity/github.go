@@ -8,6 +8,7 @@ import (
 type GitHubUser struct {
 	Login             string `json:"login"`
 	ID                int    `json:"id"`
+	Email             string `json:"email"`
 	NodeID            string `json:"node_id"`
 	AvatarURL         string `json:"avatar_url"`
 	GravatarID        string `json:"gravatar_id"`

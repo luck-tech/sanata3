@@ -2,7 +2,9 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"sort"
+	"strconv"
 
 	"github.com/murasame29/go-httpserver-template/internal/entity"
 	"github.com/murasame29/go-httpserver-template/internal/usecase/dai"
@@ -24,6 +26,7 @@ type LoginGitHubResult struct {
 	UserID       string
 	UserName     string
 	Icon         string
+	IsNewUser    bool
 }
 
 func (g *GitHub) Login(ctx context.Context, code string) (*LoginGitHubResult, error) {
@@ -31,20 +34,22 @@ func (g *GitHub) Login(ctx context.Context, code string) (*LoginGitHubResult, er
 	if err != nil {
 		return nil, err
 	}
+	isNewUser := false
+	fmt.Println(token)
 
 	userInfo, err := g.repo.GetUserByToken(ctx, token.AccessToken)
 	if err != nil {
 		return nil, err
 	}
-
-	user, found, err := g.repo.GetUser(ctx, string(rune(userInfo.ID)))
+	user, found, err := g.repo.GetUser(ctx, strconv.Itoa(userInfo.ID))
 	if err != nil {
 		return nil, err
 	}
 	if !found {
+		isNewUser = true
 		newUser := &entity.User{
-			ID:    string(rune(userInfo.ID)),
-			Email: user.Email,
+			ID:    strconv.Itoa(userInfo.ID),
+			Email: userInfo.Email,
 			Name:  userInfo.Login,
 			Icon:  userInfo.AvatarURL,
 		}
@@ -59,7 +64,7 @@ func (g *GitHub) Login(ctx context.Context, code string) (*LoginGitHubResult, er
 		}
 	}
 
-	user, _, err = g.repo.GetUser(ctx, string(rune(userInfo.ID)))
+	user, _, err = g.repo.GetUser(ctx, strconv.Itoa(userInfo.ID))
 	if err != nil {
 		return nil, err
 	}
@@ -70,6 +75,7 @@ func (g *GitHub) Login(ctx context.Context, code string) (*LoginGitHubResult, er
 		UserID:       user.ID,
 		UserName:     user.Name,
 		Icon:         user.Icon,
+		IsNewUser:    isNewUser,
 	}, nil
 }
 

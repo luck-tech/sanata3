@@ -37,6 +37,7 @@ func NewGitHubSerivce() *GitHubSerivce {
 }
 
 func (s *GitHubSerivce) FetchToken(ctx context.Context, code string) (*oauth2.Token, error) {
+	fmt.Println(code)
 	// Set us the request body as JSON
 	requestBodyMap := map[string]string{
 		"client_id":     s.oac.ClientID,
@@ -73,9 +74,13 @@ func (s *GitHubSerivce) FetchToken(ctx context.Context, code string) (*oauth2.To
 		return nil, err
 	}
 
+	fmt.Println(string(respbody))
+
 	// Convert stringified JSON to a struct object of type githubAccessTokenResponse
 	var ghresp *oauth2.Token
-	json.Unmarshal(respbody, &ghresp)
+	if err := json.Unmarshal(respbody, &ghresp); err != nil {
+		return nil, err
+	}
 
 	return ghresp, nil
 }
@@ -90,20 +95,23 @@ func (s *GitHubSerivce) GetUserByToken(ctx context.Context, accessToken string) 
 }
 
 func (s *GitHubSerivce) GetUserUseLanguagesByID(ctx context.Context, accessToken, username string) (map[string]int, error) {
-	repos, err := requests.RequestWithAccessToken[[]entity.GitHubRepo](ctx, fmt.Sprintf("https://api.github.com/users/%s/repos", username), accessToken)
+	repos, err := requests.Request[[]entity.GitHubRepo](ctx, fmt.Sprintf("https://api.github.com/users/%s/repos", username))
 	if err != nil {
 		return nil, err
 	}
 
+	fmt.Println("ok111")
+
 	var wg conc.WaitGroup
-	var languageMaps *entity.Language
+	languageMaps := entity.NewLanguage()
 
 	for _, repo := range *repos {
 		wg.Go(func() {
-			language, err := requests.RequestWithAccessToken[map[string]int](ctx, fmt.Sprintf("https://api.github.com/repos/%s/%s/languages", username, repo.Name), accessToken)
+			language, err := requests.Request[map[string]int](ctx, fmt.Sprintf("https://api.github.com/repos/%s/%s/languages", username, repo.Name))
 			if err != nil {
 				return
 			}
+			fmt.Println("ok222")
 
 			for k, v := range *language {
 				languageMaps.Store(k, v)

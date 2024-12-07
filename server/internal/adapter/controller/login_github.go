@@ -23,10 +23,11 @@ func (r LoginGitHubRequest) Validate() error {
 }
 
 type LoginGitHubResponse struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-	Icon string `json:"icon"`
-	Code string `json:"code"`
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	Icon      string `json:"icon"`
+	Code      string `json:"code"`
+	IsNewUser bool   `json:"isNewUser"`
 }
 
 // googleLogin godoc
@@ -63,10 +64,11 @@ func LoginGitHub(i *interactor.Login) echo.HandlerFunc {
 		}
 
 		return c.JSON(http.StatusOK, LoginGitHubResponse{
-			ID:   result.UserID,
-			Name: result.UserName,
-			Icon: result.Icon,
-			Code: reqBody.Code,
+			ID:        result.UserID,
+			Name:      result.UserName,
+			Icon:      result.Icon,
+			Code:      reqBody.Code,
+			IsNewUser: result.IsNewUser,
 		})
 	}
 }

@@ -536,6 +536,9 @@
                         "$ref": "#/definitions/entity.DisplayUser"
                     }
                 },
+                "name": {
+                    "type": "string"
+                },
                 "ownerId": {
                     "type": "string"
                 },
@@ -569,6 +572,9 @@
                     "items": {
                         "$ref": "#/definitions/entity.DisplayUser"
                     }
+                },
+                "name": {
+                    "type": "string"
                 },
                 "ownerId": {
                     "type": "string"
@@ -628,6 +634,9 @@
                         "$ref": "#/definitions/entity.DisplayUser"
                     }
                 },
+                "name": {
+                    "type": "string"
+                },
                 "ownerId": {
                     "type": "string"
                 },
@@ -674,6 +683,9 @@
                 },
                 "id": {
                     "type": "string"
+                },
+                "isNewUser": {
+                    "type": "boolean"
                 },
                 "name": {
                     "type": "string"

@@ -41,10 +41,11 @@ type LoginGitHubParam struct {
 }
 
 type LoginGithubResult struct {
-	JWT      string
-	UserID   string
-	UserName string
-	Icon     string
+	JWT       string
+	UserID    string
+	UserName  string
+	Icon      string
+	IsNewUser bool
 }
 
 func (i *Login) GitHub(ctx context.Context, param LoginGitHubParam) (*LoginGithubResult, error) {
@@ -78,10 +79,11 @@ func (i *Login) GitHub(ctx context.Context, param LoginGitHubParam) (*LoginGithu
 	}
 
 	return &LoginGithubResult{
-		JWT:      token,
-		UserID:   loginResult.UserID,
-		UserName: loginResult.UserName,
-		Icon:     loginResult.Icon,
+		JWT:       token,
+		UserID:    loginResult.UserID,
+		UserName:  loginResult.UserName,
+		Icon:      loginResult.Icon,
+		IsNewUser: loginResult.IsNewUser,
 	}, nil
 }
 

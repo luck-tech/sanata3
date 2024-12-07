@@ -8,6 +8,7 @@ import (
 type GitHubUser struct {
 	Login             string `json:"login"`
 	ID                int    `json:"id"`
+	Email             string `json:"email"`
 	NodeID            string `json:"node_id"`
 	AvatarURL         string `json:"avatar_url"`
 	GravatarID        string `json:"gravatar_id"`
@@ -111,6 +112,13 @@ type GitHubRepo struct {
 type Language struct {
 	Count map[string]int
 	mu    sync.Mutex
+}
+
+func NewLanguage() *Language {
+	return &Language{
+		Count: make(map[string]int),
+		mu:    sync.Mutex{},
+	}
 }
 
 func (l *Language) Store(key string, value int) {

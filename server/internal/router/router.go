@@ -34,7 +34,8 @@ func NewEcho(interactors *di) http.Handler {
 		middleware.RequestID(),
 		middleware.Auth(interactors.login),
 	)
-
+	v1Route.GET("/search", nil)                                             // figma: search
+	v1Route.GET("/skilltags", controller.SearchSkillTag(interactors.skill)) // figma: search
 	{
 		usersRoute := v1Route.Group("/users")
 		{
@@ -70,8 +71,6 @@ func NewEcho(interactors *di) http.Handler {
 			recommendsRoute.GET("/users", nil) // figma: home
 		}
 
-		v1Route.GET("/search", nil)                                              // figma: search
-		v1Route.GET("/skilltags ", controller.SearchSkillTag(interactors.skill)) // figma: search
 	}
 
 	return engine

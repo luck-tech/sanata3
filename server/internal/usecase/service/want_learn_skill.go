@@ -35,5 +35,14 @@ func (s *WantLearnSkill) UpsertWantLearnSkill(ctx context.Context, userID string
 		skills = append(skills, entity.WantLearnSkill{UserID: userID, SkillID: s})
 	}
 
+	// TODO: Neptune
+	driverRemoteConnection, err := driver.NewNeptuneClient()
+		if err != nil {
+			return nil, err
+		}
+		defer driverRemoteConnection.Close()
+
+		g := gremlingo.Traversal_().WithRemote(driverRemoteConnection)
+
 	return s.repo.UpsertWantLearnSkills(ctx, skills)
 }

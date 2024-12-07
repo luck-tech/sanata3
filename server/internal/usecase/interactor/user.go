@@ -119,7 +119,5 @@ func (u *User) Update(ctx context.Context, param UpdateUserParam) (*entity.User,
 		return nil, nil, nil, err
 	}
 
-	// TODO: Neptune
-
 	return u.Get(ctx, param.UserID)
 }

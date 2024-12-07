@@ -3,6 +3,8 @@ package interactor
 import (
 	"context"
 
+	gremlingo "github.com/apache/tinkerpop/gremlin-go/driver"
+	"github.com/murasame29/go-httpserver-template/internal/driver"
 	"github.com/murasame29/go-httpserver-template/internal/entity"
 	"github.com/murasame29/go-httpserver-template/internal/framework/contexts"
 	"github.com/murasame29/go-httpserver-template/internal/framework/serrors"
@@ -172,7 +174,21 @@ func (i *Room) Create(ctx context.Context, param CreateRoomParam) (*GetRoomResul
 		return nil, err
 	}
 
-	// TODO: Neptune
+	// NOTE:(harune) Neptune
+	driverRemoteConnection, err := driver.NewNeptuneClient()
+	if err != nil {
+		return nil, err
+	}
+	defer driverRemoteConnection.Close()
+
+	g := gremlingo.Traversal_().WithRemote(driverRemoteConnection)
+
+	// ルームノードの追加
+	promise := g.AddV("room").Property("id", roomID).Iterate()
+	err = <-promise
+	if err != nil {
+		return nil, err
+	}
 
 	return i.GetByID(ctx, roomID)
 }

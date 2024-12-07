@@ -32,7 +32,7 @@ type SearchSkillTagResponse struct {
 // @Success  200  {object}  SearchSkillTagResponse
 // @Failure  400  {object}  echo.HTTPError
 // @Failure  500  {object}  echo.HTTPError
-// @Router   /skilltags [get]
+// @Router   /v1/skilltags [get]
 func SearchSkillTag(i *interactor.Skill) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := contexts.ConvertContext(c)

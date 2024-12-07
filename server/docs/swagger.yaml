@@ -238,7 +238,7 @@ paths:
       summary: GitHub Login
       tags:
       - LoginRequest
-  /rooms:
+  /v1/rooms:
     get:
       consumes:
       - application/json
@@ -290,7 +290,7 @@ paths:
       summary: Create Room
       tags:
       - Room
-  /rooms/{roomId}:
+  /v1/rooms/{roomId}:
     delete:
       consumes:
       - application/json
@@ -381,7 +381,7 @@ paths:
       summary: Update Room
       tags:
       - Room
-  /rooms/{roomId}/members:
+  /v1/rooms/{roomId}/members:
     delete:
       consumes:
       - application/json
@@ -438,7 +438,7 @@ paths:
       summary: Join Room
       tags:
       - Room
-  /skilltags:
+  /v1/skilltags:
     get:
       consumes:
       - application/json
@@ -468,7 +468,7 @@ paths:
       summary: Serch SkillTag
       tags:
       - SkillTag
-  /users/{userId}:
+  /v1/users/{userId}:
     get:
       consumes:
       - application/json

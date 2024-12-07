@@ -31,7 +31,7 @@ type JoinRoomResponse struct {
 // @Success  200  {object}  JoinRoomResponse
 // @Failure  400  {object}  echo.HTTPError
 // @Failure  500  {object}  echo.HTTPError
-// @Router   /rooms/{roomId}/members [post]
+// @Router   /v1/rooms/{roomId}/members [post]
 func JoinRoom(i *interactor.Room) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := contexts.ConvertContext(c)
@@ -80,7 +80,7 @@ type LeaveRoomResponse struct {
 // @Success  200  {object}  LeaveRoomResponse
 // @Failure  400  {object}  echo.HTTPError
 // @Failure  500  {object}  echo.HTTPError
-// @Router   /rooms/{roomId}/members [delete]
+// @Router   /v1/rooms/{roomId}/members [delete]
 func LeaveRoom(i *interactor.Room) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := contexts.ConvertContext(c)

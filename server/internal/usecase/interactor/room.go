@@ -161,6 +161,10 @@ func (i *Room) Create(ctx context.Context, param CreateRoomParam) (*GetRoomResul
 		return nil, err
 	}
 
+	if err := i._skill.Upsert(ctx, param.AimSkills); err != nil {
+		return nil, err
+	}
+
 	if err := i._aimSkill.Upsert(ctx, roomID, param.AimSkills); err != nil {
 		return nil, err
 	}

@@ -41,7 +41,7 @@ type GetRoomResponse struct {
 // @Success  200  {object}  GetRoomResponse
 // @Failure  400  {object}  echo.HTTPError
 // @Failure  500  {object}  echo.HTTPError
-// @Router   /rooms/{roomId} [get]
+// @Router   /v1/rooms/{roomId} [get]
 func GetRoom(i *interactor.Room) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := contexts.ConvertContext(c)
@@ -86,7 +86,7 @@ type ListRoomResponse struct {
 // @Success  200  {object}  ListRoomResponse
 // @Failure  400  {object}  echo.HTTPError
 // @Failure  500  {object}  echo.HTTPError
-// @Router   /rooms [get]
+// @Router   /v1/rooms [get]
 func ListRoom(i *interactor.Room) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := contexts.ConvertContext(c)
@@ -153,7 +153,7 @@ type CreateRoomResponse struct {
 // @Success  200  {object}  CreateRoomResponse
 // @Failure  400  {object}  echo.HTTPError
 // @Failure  500  {object}  echo.HTTPError
-// @Router   /rooms [post]
+// @Router   /v1/rooms [post]
 func CreateRoom(i *interactor.Room) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := contexts.ConvertContext(c)
@@ -220,7 +220,7 @@ type UpdateRoomResponse struct {
 // @Success  200  {object}  CreateRoomResponse
 // @Failure  400  {object}  echo.HTTPError
 // @Failure  500  {object}  echo.HTTPError
-// @Router   /rooms/{roomId} [put]
+// @Router   /v1/rooms/{roomId} [put]
 func UpdateRoom(i *interactor.Room) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := contexts.ConvertContext(c)
@@ -278,7 +278,7 @@ type DeleteRoomResponse struct {
 // @Success  200  {object}  DeleteRoomResponse
 // @Failure  400  {object}  echo.HTTPError
 // @Failure  500  {object}  echo.HTTPError
-// @Router   /rooms/{roomId} [delete]
+// @Router   /v1/rooms/{roomId} [delete]
 func DeleteRoom(i *interactor.Room) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := contexts.ConvertContext(c)

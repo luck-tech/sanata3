@@ -22,6 +22,8 @@ function GitHubCallback() {
         localStorage.setItem("access code", response.data.code);
 
         setLoginStatus(false);
+        localStorage.setItem("code", response.data.code);
+        localStorage.setItem("userId", response.data.id);
         router.navigate({ to: "/form" });
       } catch (error) {
         console.error("Login Error: ", error);
@@ -29,7 +31,7 @@ function GitHubCallback() {
     };
 
     fetchGitHubLogin();
-  }, [api, code, router]);
+  }, [code, router]);
 
   if (loginStatus) {
     return <p>isLoading...</p>;

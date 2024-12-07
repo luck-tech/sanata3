@@ -108,7 +108,6 @@ func (i *Room) List(ctx context.Context) (*ListRoomResult, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	skillMap := entity.ToSkillMap(skills)
 
 	listMemberResult, err := i._roomMember.ListByRoomIDs(ctx, roomIDs)

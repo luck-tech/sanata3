@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"sort"
 	"strconv"
 
@@ -35,7 +34,6 @@ func (g *GitHub) Login(ctx context.Context, code string) (*LoginGitHubResult, er
 		return nil, err
 	}
 	isNewUser := false
-	fmt.Println(token)
 
 	userInfo, err := g.repo.GetUserByToken(ctx, token.AccessToken)
 	if err != nil {

@@ -84,11 +84,11 @@ func (r *SkillRepository) SearchSkills(ctx context.Context, query string, limit 
 
 	q := r.db.NewSelect().
 		Model(&skillList).
-		Join("JOIN (?) AS uc ON s.id = uc.skill_id", usedSkillsCount).
-		Join("LEFT JOIN (?) AS wlc ON s.id = wlc.skill_id", wantLearnSkillsCount)
+		Join("JOIN (?) AS uc ON skill.id = uc.skill_id", usedSkillsCount).
+		Join("LEFT JOIN (?) AS wlc ON skill.id = wlc.skill_id", wantLearnSkillsCount)
 
 	if len(query) != 0 {
-		q = q.Where("skills.name LIKE ?", "%"+query+"%")
+		q = q.Where("skill.name LIKE ?", "%"+query+"%")
 	}
 
 	if err := q.Order("uc.used_count DESC").Order("wlc.want_learn_count DESC").Limit(limit).Scan(ctx, &skillList); err != nil {

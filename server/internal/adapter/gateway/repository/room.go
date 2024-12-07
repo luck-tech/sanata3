@@ -58,7 +58,11 @@ func (s *RoomRepository) GetRoom(ctx context.Context, roomID string) (*entity.Ro
 
 func (s *RoomRepository) ListRoom(ctx context.Context, userID string) ([]entity.Room, error) {
 	var rooms []entity.Room
-	if _, err := s.db.NewUpdate().Model(&rooms).WherePK().Exec(ctx); err != nil {
+	// SELECT * FROM rooms JOIN
+	err := s.db.NewSelect().Model(&rooms).Join(
+		"LEFT JOIN room_members ON room.id = room_members.room_id",
+	).Where("room_members.user_id = ?", userID).Scan(ctx, &rooms)
+	if err != nil {
 		return nil, err
 	}
 

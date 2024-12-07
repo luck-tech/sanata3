@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"log/slog"
 	"strings"
 
@@ -26,7 +25,6 @@ func SetupCORS() echo.MiddlewareFunc {
 func AllowAllOrigins() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			fmt.Println(c.Request().Header)
 			requestAddr := c.Request().Header.Get("Origin")
 			// no origin ignore
 			if requestAddr == "" {

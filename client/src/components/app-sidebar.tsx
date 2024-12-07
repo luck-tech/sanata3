@@ -16,40 +16,12 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
+import { User } from "@/types/user";
+import { Room } from "@/types/room";
 
-// This is sample data.
-const data = {
-  user: {
-    name: "shadcn",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "React",
-      url: "/react", // ルームのIdとして受け取りurlにする
-    },
-    {
-      title: "Next.js",
-      url: "/nextjs",
-    },
-    {
-      title: "Hono",
-      url: "/hono",
-    },
-    {
-      title: "Web開発全般",
-      url: "/web",
-    },
-    {
-      title: "ITパスポート",
-      url: "/it",
-    },
-  ],
-};
-
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ user, rooms }: { user: User; rooms: Room[] }) {
   return (
-    <Sidebar {...props}>
+    <Sidebar>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -79,9 +51,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupLabel>参加中のルーム</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {data.navMain.map((item, idx) => (
-                <SidebarLink to={item.url} key={idx}>
-                  {item.title}
+              {rooms.map((room) => (
+                <SidebarLink to={room.roomId} key={room.roomId}>
+                  {room.name}
                 </SidebarLink>
               ))}
             </SidebarMenu>
@@ -89,7 +61,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

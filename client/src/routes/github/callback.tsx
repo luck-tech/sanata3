@@ -1,7 +1,7 @@
+import api from "@/api/axiosInstance";
 import { createFileRoute } from "@tanstack/react-router";
 import { useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import axios from "axios";
 
 export const Route = createFileRoute("/github/callback")({
   component: GitHubCallback,
@@ -13,13 +13,6 @@ function GitHubCallback() {
   const code = searchParams.get("code");
 
   const [loginStatus, setLoginStatus] = useState(true);
-
-  const api = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
 
   useEffect(() => {
     const fetchGitHubLogin = async () => {

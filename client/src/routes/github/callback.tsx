@@ -19,8 +19,6 @@ function GitHubCallback() {
       if (!code) router.navigate({ to: "/" });
       try {
         const response = await api.post("/login/github", { code });
-        localStorage.setItem("access code", response.data.code);
-
         setLoginStatus(false);
         localStorage.setItem("code", response.data.code);
         localStorage.setItem("userId", response.data.id);

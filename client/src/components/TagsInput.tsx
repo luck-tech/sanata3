@@ -3,7 +3,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TagsInputProps } from "@/types/form";
-import mockData from "@/mockData.json";
 import { X } from "lucide-react";
 import api from "@/api/axiosInstance";
 
@@ -21,16 +20,15 @@ const TagsInput = ({
   const fetchTags = async (query: string) => {
     try {
       setLoading(true);
-      const code = localStorage.getItem("access code"); // ローカルストレージからコードを取得
+      const token = localStorage.getItem("code");
 
-      // GETリクエスト
-      const response = await api.get("/skilltags", {
+      const response = await api.get("/v1/skilltags", {
         params: {
           limit: 10,
           tag: query,
         },
         headers: {
-          Authorization: `Bearer ${code}`, // `code` を Bearer トークンとして追加
+          Authorization: token,
         },
       });
       setAvailableTags(response.data.tags || []);

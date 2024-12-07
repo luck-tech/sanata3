@@ -6,6 +6,8 @@ import (
 	"sort"
 	"strconv"
 
+	gremlingo "github.com/apache/tinkerpop/gremlin-go/v3/driver"
+	"github.com/murasame29/go-httpserver-template/internal/driver"
 	"github.com/murasame29/go-httpserver-template/internal/entity"
 	"github.com/murasame29/go-httpserver-template/internal/usecase/dai"
 )
@@ -57,8 +59,21 @@ func (g *GitHub) Login(ctx context.Context, code string) (*LoginGitHubResult, er
 			return nil, err
 		}
 
-		// TODO: Neptune
-	
+		// NOTE:(harune) Neptune
+		driverRemoteConnection, err := driver.NewNeptuneClient()
+		if err != nil {
+			return nil, err
+		}
+		defer driverRemoteConnection.Close()
+
+		g := gremlingo.Traversal_().WithRemote(driverRemoteConnection)
+
+		// ユーザーノードの追加
+		promise := g.AddV("user").Property("id", userInfo.ID).Iterate()
+		err = <-promise
+		if err != nil {
+			return nil, err
+		}
 	} else {
 		user.Name = userInfo.Login
 		user.Icon = userInfo.AvatarURL

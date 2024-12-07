@@ -14,7 +14,7 @@ func NewNeptuneClient() (*gremlingo.DriverRemoteConnection, error) {
 			settings.TraversalSource = "g"
 		})
 	if err != nil {
-		panic(err)
+		return nil, fmt.Errorf("failed to create driver remote connection: %w", err)
 	}
 
 	return driverRemoteConnection, nil

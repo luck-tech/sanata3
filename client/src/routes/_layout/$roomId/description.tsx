@@ -7,6 +7,7 @@ import { createFileRoute, Navigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_layout/$roomId/description")({
   component: RouteComponent,
+  errorComponent: () => <Navigate to="/" />,
 });
 
 function RouteComponent() {

@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { UserItem } from "@/components/userItem";
 import { Room } from "@/types/room";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { Headphones, Send } from "lucide-react";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { DoorClosed, Headphones, Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 export const Route = createFileRoute("/_layout/$roomId/")({
@@ -23,6 +23,7 @@ function RouteComponent() {
   const [text, setText] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { roomId }: { roomId: string } = Route.useParams();
+  const navigate = useNavigate();
 
   const { data } = useSuspenseQuery({
     queryKey: ["room", roomId],
@@ -34,6 +35,24 @@ function RouteComponent() {
         },
       });
       return res.data;
+    },
+  });
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const token = localStorage.getItem("code");
+      const res = await api.delete(`/v1/rooms/${roomId}/members`, {
+        headers: {
+          Authorization: token,
+        },
+      });
+      return res.data;
+    },
+    onSuccess: () => {
+      navigate({ to: "/home" });
+    },
+    onError: (error) => {
+      console.error(error);
     },
   });
 
@@ -111,22 +130,33 @@ function RouteComponent() {
             </Button>
           </div>
         </div>
-        <div className="w-full md:w-56 border-l pl-4">
+        <div className="w-full md:w-56 border-l pl-4 h-full flex flex-col justify-between">
           <div>
-            <h3 className="font-semibold pb-2">概要</h3>
-            <p className="text-muted-foreground text-sm">{data.description}</p>
-          </div>
-          <div className="py-6">
-            <h3 className="font-semibold pb-2">メンバー</h3>
-            <div className="flex flex-col gap-2">
-              {data.members.map((member) => (
-                <UserItem
-                  user={{ name: member.name, icon: member.icon }}
-                  key={member.id}
-                />
-              ))}
+            <div>
+              <h3 className="font-semibold pb-2">概要</h3>
+              <p className="text-muted-foreground text-sm">
+                {data.description}
+              </p>
+            </div>
+            <div className="py-6">
+              <h3 className="font-semibold pb-2">メンバー</h3>
+              <div className="flex flex-col gap-2">
+                {data.members.map((member) => (
+                  <UserItem
+                    user={{ name: member.name, icon: member.icon }}
+                    key={member.id}
+                  />
+                ))}
+              </div>
             </div>
           </div>
+          <Button
+            variant={"ghost"}
+            size={"sm"}
+            onClick={() => mutation.mutate()}
+          >
+            <DoorClosed /> このルームから抜ける
+          </Button>
         </div>
       </div>
     </div>

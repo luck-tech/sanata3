@@ -50,11 +50,10 @@ function LayoutComponent() {
       return res.data;
     },
   });
-  console.log(rooms);
 
   return (
     <SidebarProvider>
-      <AppSidebar user={user} />
+      <AppSidebar user={user} rooms={rooms.rooms} />
       <main className="w-full">
         <SidebarInset className="min-h-screen">
           <header className="flex h-16 shrink-0 items-center border-b gap-2 px-4 sticky top-0 bg-white z-20">

@@ -20,10 +20,12 @@ const (
 
 var contextkeys = []ContextKey{
 	RequestID,
+	UserID,
+	SessionID,
 }
 
 func GetRequestID(ctx context.Context) string {
-	v, ok := ctx.Value(RequestID.String()).(string)
+	v, ok := ctx.Value(RequestID).(string)
 	if !ok {
 		return ""
 	}
@@ -31,7 +33,7 @@ func GetRequestID(ctx context.Context) string {
 }
 
 func GetUserID(ctx context.Context) string {
-	v, ok := ctx.Value(UserID.String()).(string)
+	v, ok := ctx.Value(UserID).(string)
 	if !ok {
 		return ""
 	}
@@ -39,7 +41,7 @@ func GetUserID(ctx context.Context) string {
 }
 
 func GetSessionID(ctx context.Context) string {
-	v, ok := ctx.Value(SessionID.String()).(string)
+	v, ok := ctx.Value(SessionID).(string)
 	if !ok {
 		return ""
 	}
@@ -51,6 +53,7 @@ func ConvertContext(c echo.Context) context.Context {
 	ctx := context.Background()
 	for _, key := range contextkeys {
 		v := c.Get(key.String())
+
 		ctx = context.WithValue(ctx, key, v)
 	}
 

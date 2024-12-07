@@ -15,6 +15,7 @@ const TagsInput = ({
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
+  const [isComposing, setIsComposing] = useState<boolean>(false); // 日本語入力変換中かどうか
   const inputRef = useRef<HTMLInputElement>(null);
 
   const fetchTags = async (query: string) => {
@@ -24,7 +25,7 @@ const TagsInput = ({
 
       const response = await api.get("/v1/skilltags", {
         params: {
-          limit: 10,
+          limit: 5,
           tag: query,
         },
         headers: {
@@ -53,6 +54,21 @@ const TagsInput = ({
       setDropdownVisible(false); // 入力が空の場合はドロップダウンを非表示
     }
   };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (
+      e.key === "Enter" &&
+      !isComposing && // 日本語入力中ではない場合のみ実行
+      dropdownVisible &&
+      availableTags.length <= 0 &&
+      inputValue.trim() !== ""
+    ) {
+      addTag(inputValue.trim());
+    }
+  };
+
+  const handleCompositionStart = () => setIsComposing(true);
+  const handleCompositionEnd = () => setIsComposing(false);
 
   const addTag = (tag: string) => {
     if (!selectedTags.includes(tag)) {
@@ -113,15 +129,18 @@ const TagsInput = ({
         {isEditing && (
           <input
             ref={inputRef}
-            className="flex-1 outline-none bg-transparent"
+            className="flex-1 outline-none bg-transparent leading-[30px]"
             value={inputValue}
             onChange={handleInputChange}
+            onKeyDown={handleKeyDown} // Enterキー押下を検知
+            onCompositionStart={handleCompositionStart} // 日本語入力開始
+            onCompositionEnd={handleCompositionEnd} // 日本語入力確定
             placeholder="ex: React, ITパスポート"
           />
         )}
       </div>
       {isEditing && dropdownVisible && (
-        <div className="w-full border border-gray-300 rounded-md mt-1 p-2">
+        <div className="absolute z-50 w-full border border-gray-300 rounded-md mt-1 p-2 bg-white shadow-md">
           {loading ? (
             <div className="text-sm text-muted-foreground">読み込み中...</div>
           ) : availableTags.length > 0 ? (

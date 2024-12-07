@@ -90,7 +90,7 @@ const TagsInput = ({
   };
 
   return (
-    <div className="w-full max-w-screen-sm">
+    <div className="w-full max-w-screen-sm relative">
       <div
         className={`flex flex-wrap gap-2 ${
           isEditing ? "border border-input" : ""

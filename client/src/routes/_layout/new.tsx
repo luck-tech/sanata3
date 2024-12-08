@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import TagsInput from "@/components/TagsInput";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/api/axiosInstance";
 
 const formSchema = z.object({
@@ -46,6 +46,7 @@ function RouteComponent() {
     },
   });
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: async (room: z.infer<typeof formSchema>) => {
@@ -58,6 +59,7 @@ function RouteComponent() {
       return res.data;
     },
     onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["rooms"] });
       navigate({ to: "/$roomId", params: { roomId: data.roomId } });
     },
     onError: (error) => {

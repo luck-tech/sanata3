@@ -29,11 +29,15 @@ function RouteComponent() {
   const mutation = useMutation({
     mutationFn: async () => {
       const token = localStorage.getItem("code");
-      const res = await api.post(`/v1/rooms/${roomId}/members`, {
-        headers: {
-          Authorization: token,
-        },
-      });
+      const res = await api.post(
+        `/v1/rooms/${roomId}/members`,
+        { roomId: roomId },
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
       return res.data;
     },
     onError: (error) => {

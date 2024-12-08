@@ -17,13 +17,13 @@ func Auth(login *interactor.Login) echo.MiddlewareFunc {
 		return func(c echo.Context) error {
 			var authCode string
 			if strings.Contains(c.Path(), "/chat") && c.Request().Method == http.MethodGet {
-				authCode := c.Param("auth")
+				authCode = c.Param("auth")
 				if len(authCode) == 0 {
 					slog.Error("auth error. required auth param")
 					return echo.ErrUnauthorized
 				}
 			} else {
-				authCode := c.Request().Header.Get("Authorization")
+				authCode = c.Request().Header.Get("Authorization")
 				if len(authCode) == 0 {
 					slog.Error("auth error. required auth header")
 					return echo.ErrUnauthorized

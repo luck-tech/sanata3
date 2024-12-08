@@ -24,6 +24,7 @@ function RouteComponent() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { roomId }: { roomId: string } = Route.useParams();
   const navigate = useNavigate();
+  // const eventSource = useRef<EventSource>();
 
   const { data } = useSuspenseQuery({
     queryKey: ["room", roomId],
@@ -39,6 +40,7 @@ function RouteComponent() {
   });
 
   const mutation = useMutation({
+    mutationKey: ["leaveMember"],
     mutationFn: async () => {
       const token = localStorage.getItem("code");
       const res = await api.delete(`/v1/rooms/${roomId}/members`, {
@@ -55,6 +57,52 @@ function RouteComponent() {
       console.error(error);
     },
   });
+
+  const mutationMessage = useMutation({
+    mutationKey: ["message"],
+    mutationFn: async () => {
+      const token = localStorage.getItem("code");
+      const userId = localStorage.getItem("userId");
+      const res = await api.post(
+        `/v1/rooms/${roomId}/chat`,
+        {
+          message: text,
+          roomID: roomId,
+          userId: userId,
+        },
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+      console.log(res.data);
+      return res.data;
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
+  useEffect(() => {
+    const token = localStorage.getItem("code");
+    const apiUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+    const evtSource = new EventSource(
+      `${apiUrl}/v1/rooms/${roomId}/chat?auth=${token}`
+    );
+
+    console.log(evtSource);
+
+    // メッセージを受信したときの処理
+    evtSource.onmessage = (event) => {
+      console.log(event.data);
+    };
+
+    // コンポーネントがアンマウントされたときに接続を閉じる
+    return () => {
+      evtSource.close();
+    };
+  }, [roomId]);
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -125,7 +173,11 @@ function RouteComponent() {
               placeholder="メッセージを入力..."
               className="focus-visible:ring-1 focus-visible:ring-offset-0 resize-none min-h-fit max-h-20"
             />
-            <Button size={"icon"} disabled={!text.trim()}>
+            <Button
+              size={"icon"}
+              disabled={!text.trim()}
+              onClick={() => mutationMessage.mutate()}
+            >
               <Send />
             </Button>
           </div>

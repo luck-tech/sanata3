@@ -5,7 +5,6 @@ import {
   Link,
   Outlet,
 } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -26,7 +25,6 @@ function RootComponent() {
     <>
       <Outlet />
       <ReactQueryDevtools buttonPosition="top-right" />
-      <TanStackRouterDevtools position="bottom-right" />
     </>
   );
 }

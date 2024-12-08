@@ -2,7 +2,7 @@ import api from "@/api/axiosInstance";
 import TagsInput from "@/components/TagsInput";
 import { Button } from "@/components/ui/button";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/form")({
   component: RouteComponent,
@@ -11,16 +11,33 @@ export const Route = createFileRoute("/form")({
 function RouteComponent() {
   const [selectedWantTags, setSelectedWantTags] = useState<string[]>([]);
   const [selectedUsingTags, setSelectedUsingTags] = useState<string[]>([]);
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("code");
   const router = useRouter();
+  if (!token) router.navigate({ to: "/" });
+
+  useEffect(() => {
+    const fetchUserSkills = async () => {
+      try {
+        const response = await api.get(`/v1/users/${userId}`, {
+          headers: {
+            Authorization: token,
+          },
+        });
+
+        const data = response.data;
+        setSelectedUsingTags(
+          data.usedSkills.map((skill: { name: string }) => skill.name)
+        );
+      } catch (error) {
+        console.error("Error fetching user skills: ", error);
+      }
+    };
+
+    fetchUserSkills();
+  }, [token]);
 
   const handleSubmit = async () => {
-    const userId = localStorage.getItem("userId");
-    const token = localStorage.getItem("code");
-    if (!userId) {
-      console.error("User ID not found in localStorage");
-      return;
-    }
-
     try {
       const response = await api.put(
         `/v1/users/${userId}`,

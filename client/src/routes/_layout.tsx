@@ -10,7 +10,12 @@ import {
 } from "@/components/ui/sidebar";
 import { User } from "@/types/user";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Navigate, Outlet, createFileRoute } from "@tanstack/react-router";
+import {
+  Navigate,
+  Outlet,
+  createFileRoute,
+  useRouter,
+} from "@tanstack/react-router";
 import { Search } from "lucide-react";
 
 export const Route = createFileRoute("/_layout")({
@@ -21,11 +26,14 @@ export const Route = createFileRoute("/_layout")({
 });
 
 function LayoutComponent() {
+  const token = localStorage.getItem("code");
+  const userId = localStorage.getItem("userId");
+  const router = useRouter();
+  if (!token) router.navigate({ to: "/" });
+
   const { data: user } = useSuspenseQuery({
     queryKey: ["user"],
     queryFn: async (): Promise<User> => {
-      const token = localStorage.getItem("code");
-      const userId = localStorage.getItem("userId");
       const res = await api.get(`/v1/users/${userId}`, {
         headers: {
           Authorization: token,

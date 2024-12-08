@@ -64,7 +64,12 @@ export function NavUser({ user }: { user: User }) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                localStorage.removeItem("code");
+                window.location.reload();
+              }}
+            >
               <LogOut />
               Log out
             </DropdownMenuItem>

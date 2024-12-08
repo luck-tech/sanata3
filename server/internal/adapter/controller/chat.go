@@ -2,11 +2,14 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
+	"log"
 	"log/slog"
 	"net/http"
 	"time"
 
 	"github.com/labstack/echo/v4"
+	_ "github.com/murasame29/go-httpserver-template/internal/entity"
 	"github.com/murasame29/go-httpserver-template/internal/framework/contexts"
 	"github.com/murasame29/go-httpserver-template/internal/usecase/interactor"
 	"github.com/r3labs/sse/v2"
@@ -19,7 +22,7 @@ import (
 // @Accept   json
 // @Produce  json
 // @Param 	 roomId		path 		 string  true "roomID path param"
-// @Success  200  {object}  JoinRoomResponse
+// @Success  200  {array}  entity.Chat
 // @Failure  400  {object}  echo.HTTPError
 // @Failure  500  {object}  echo.HTTPError
 // @Router   /v1/rooms/{roomId}/chat [get]
@@ -49,6 +52,7 @@ func JoinChatRoom(i *interactor.Chat, server *sse.Server) echo.HandlerFunc {
 					RoomID:   roomId,
 					LastTime: lastTime,
 				})
+				log.Println("ちゃっと！", chats)
 				// if err != nil {
 				// 	slog.Error("failed to get chat", "error", err)
 				// 	if err := NewEvent(map[string]string{"error": err.Error()}).MarshalTo(w); err != nil {
@@ -74,17 +78,17 @@ func JoinChatRoom(i *interactor.Chat, server *sse.Server) echo.HandlerFunc {
 						Data: []byte(data),
 					})
 				} else {
-					if chats != nil {
+					if len(chats) != 0 {
 						lastTime = time.Now()
+						data, err := MarshalTo(chats)
+						if err != nil {
+							slog.Error("failed to marshal event", "error", err)
+						}
+						fmt.Println("hogehoge")
+						server.Publish("chat", &sse.Event{
+							Data: []byte(data),
+						})
 					}
-
-					data, err := MarshalTo(chats)
-					if err != nil {
-						slog.Error("failed to marshal event", "error", err)
-					}
-					server.Publish("chat", &sse.Event{
-						Data: []byte(data),
-					})
 				}
 			}
 		}

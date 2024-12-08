@@ -220,6 +220,23 @@ definitions:
     properties:
       message: {}
     type: object
+  entity.Chat:
+    properties:
+      autherId:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      id:
+        type: string
+      message:
+        type: string
+      roomId:
+        type: string
+      updatedAt:
+        type: string
+    type: object
   entity.DisplayUser:
     properties:
       description:
@@ -433,7 +450,9 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controller.JoinRoomResponse'
+            items:
+              $ref: '#/definitions/entity.Chat'
+            type: array
         "400":
           description: Bad Request
           schema:

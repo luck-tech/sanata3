@@ -303,7 +303,10 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controller.JoinRoomResponse"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Chat"
+                            }
                         }
                     },
                     "400": {
@@ -1050,6 +1053,32 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "message": {}
+            }
+        },
+        "entity.Chat": {
+            "type": "object",
+            "properties": {
+                "autherId": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "roomId": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
             }
         },
         "entity.DisplayUser": {

@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/murasame29/go-httpserver-template/internal/adapter/controller"
 	"github.com/murasame29/go-httpserver-template/internal/adapter/middleware"
+	"github.com/r3labs/sse/v2"
 
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 )
@@ -61,7 +62,11 @@ func NewEcho(interactors *di) http.Handler {
 
 				chatRoute := roomRoute.Group("/chat")
 				{
-					chatRoute.GET("", controller.JoinChatRoom(interactors.chat))          // figma: room
+					sse := sse.New()
+					sse.AutoReplay = false        // do not replay messages for each new subscriber that connects
+					_ = sse.CreateStream("chats") // EventSource in "index.html" connecting to stream named "time"
+
+					chatRoute.GET("", controller.JoinChatRoom(interactors.chat, sse))     // figma: room
 					chatRoute.POST("", controller.PostChat(interactors.chat))             // figma: room
 					chatRoute.PUT("/:chatId", controller.EditChat(interactors.chat))      // figma: room
 					chatRoute.DELETE("/:chatId", controller.DeleteChat(interactors.chat)) // figma: room

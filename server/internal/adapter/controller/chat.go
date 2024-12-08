@@ -2,8 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
-	"io"
 	"log/slog"
 	"net/http"
 	"time"
@@ -11,6 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/murasame29/go-httpserver-template/internal/framework/contexts"
 	"github.com/murasame29/go-httpserver-template/internal/usecase/interactor"
+	"github.com/r3labs/sse/v2"
 )
 
 // googleLogin godoc
@@ -24,7 +23,7 @@ import (
 // @Failure  400  {object}  echo.HTTPError
 // @Failure  500  {object}  echo.HTTPError
 // @Router   /v1/rooms/{roomId}/chat [get]
-func JoinChatRoom(i *interactor.Chat) echo.HandlerFunc {
+func JoinChatRoom(i *interactor.Chat, server *sse.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		roomId := c.Param("roomId")
 
@@ -50,70 +49,54 @@ func JoinChatRoom(i *interactor.Chat) echo.HandlerFunc {
 					RoomID:   roomId,
 					LastTime: lastTime,
 				})
+				// if err != nil {
+				// 	slog.Error("failed to get chat", "error", err)
+				// 	if err := NewEvent(map[string]string{"error": err.Error()}).MarshalTo(w); err != nil {
+				// 		slog.Error("failed to write event", "error", err)
+				// 	}
+				// } else {
+				// 	if chats != nil {
+				// 		lastTime = time.Now()
+				// 	}
+				// 	if err := NewEvent(chats).MarshalTo(w); err != nil {
+				// 		slog.Error("failed to write event", "error", err)
+				// 	}
+				// }
+
 				if err != nil {
 					slog.Error("failed to get chat", "error", err)
-					if err := NewEvent(map[string]string{"error": err.Error()}).MarshalTo(w); err != nil {
-						slog.Error("failed to write event", "error", err)
+					data, err := MarshalTo(map[string]string{"error": err.Error()})
+					if err != nil {
+						slog.Error("failed to marshal event", "error", err)
 					}
+
+					server.Publish("chat", &sse.Event{
+						Data: []byte(data),
+					})
 				} else {
 					if chats != nil {
 						lastTime = time.Now()
 					}
-					if err := NewEvent(chats).MarshalTo(w); err != nil {
-						slog.Error("failed to write event", "error", err)
+
+					data, err := MarshalTo(chats)
+					if err != nil {
+						slog.Error("failed to marshal event", "error", err)
 					}
+					server.Publish("chat", &sse.Event{
+						Data: []byte(data),
+					})
 				}
-				w.Flush()
 			}
 		}
 	}
 }
 
-type Event struct {
-	Data    any
-	Retry   []byte
-	Comment []byte
-}
-
-func NewEvent(data any) *Event {
-	if data == nil {
-		return &Event{
-			Comment: []byte("ping"),
-		}
+func MarshalTo(data any) ([]byte, error) {
+	d, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
 	}
-	return &Event{
-		Data: data,
-	}
-}
-
-func (e *Event) MarshalTo(w io.Writer) error {
-	if e.Data == nil && len(e.Comment) == 0 {
-		return nil
-	}
-
-	if e.Data != nil {
-		data, err := json.Marshal(e.Data)
-		if err != nil {
-			return err
-		}
-		if _, err := fmt.Fprintf(w, "%s", data); err != nil {
-			return err
-		}
-
-		if len(e.Retry) > 0 {
-			if _, err := fmt.Fprintf(w, "retry: %s\n", e.Retry); err != nil {
-				return err
-			}
-		}
-	}
-
-	if len(e.Comment) > 0 {
-		if _, err := fmt.Fprintf(w, ": %s\n", e.Comment); err != nil {
-			return err
-		}
-	}
-
-	return nil
+	return d, nil
 }
 
 type PostChatRequest struct {

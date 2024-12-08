@@ -34,6 +34,5 @@ func (s *WantLearnSkill) UpsertWantLearnSkill(ctx context.Context, userID string
 	for _, s := range WantLearnSkillIDs {
 		skills = append(skills, entity.WantLearnSkill{UserID: userID, SkillID: s})
 	}
-
-	return s.repo.UpsertWantLearnSkills(ctx, skills)
+	return s.repo.UpsertWantLearnSkills(ctx, userID, skills)
 }

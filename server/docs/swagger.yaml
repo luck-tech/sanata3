@@ -31,7 +31,28 @@ definitions:
       roomId:
         type: string
     type: object
+  controller.DeleteChatResponse:
+    properties:
+      string:
+        type: string
+    type: object
   controller.DeleteRoomResponse:
+    properties:
+      string:
+        type: string
+    type: object
+  controller.EditChatRequest:
+    properties:
+      chatID:
+        type: string
+      message:
+        type: string
+      roomID:
+        type: string
+      userId:
+        type: string
+    type: object
+  controller.EditChatResponse:
     properties:
       string:
         type: string
@@ -123,6 +144,20 @@ definitions:
       isNewUser:
         type: boolean
       name:
+        type: string
+    type: object
+  controller.PostChatRequest:
+    properties:
+      message:
+        type: string
+      roomID:
+        type: string
+      userId:
+        type: string
+    type: object
+  controller.PostChatResponse:
+    properties:
+      string:
         type: string
     type: object
   controller.SearchSkillTagResponse:
@@ -381,6 +416,142 @@ paths:
       summary: Update Room
       tags:
       - Room
+  /v1/rooms/{roomId}/chat:
+    get:
+      consumes:
+      - application/json
+      operationId: GetChat
+      parameters:
+      - description: roomID path param
+        in: path
+        name: roomId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.JoinRoomResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Get Chat
+      tags:
+      - Chat
+    post:
+      consumes:
+      - application/json
+      operationId: PostChat
+      parameters:
+      - description: roomID path param
+        in: path
+        name: roomId
+        required: true
+        type: string
+      - description: post chat request
+        in: body
+        name: b
+        required: true
+        schema:
+          $ref: '#/definitions/controller.PostChatRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.PostChatResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Post Chat
+      tags:
+      - Chat
+  /v1/rooms/{roomId}/chat/{chatId}:
+    delete:
+      consumes:
+      - application/json
+      operationId: DeleteChat
+      parameters:
+      - description: roomID path param
+        in: path
+        name: roomId
+        required: true
+        type: string
+      - description: chatID path param
+        in: path
+        name: chatId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.DeleteChatResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Delete Chat
+      tags:
+      - Chat
+    put:
+      consumes:
+      - application/json
+      operationId: EditChat
+      parameters:
+      - description: roomID path param
+        in: path
+        name: roomId
+        required: true
+        type: string
+      - description: chatID path param
+        in: path
+        name: chatId
+        required: true
+        type: string
+      - description: edit chat request
+        in: body
+        name: b
+        required: true
+        schema:
+          $ref: '#/definitions/controller.EditChatRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.EditChatResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Edit Chat
+      tags:
+      - Chat
   /v1/rooms/{roomId}/members:
     delete:
       consumes:

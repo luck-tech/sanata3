@@ -7,6 +7,7 @@ type di struct {
 	user  *interactor.User
 	skill *interactor.Skill
 	room  *interactor.Room
+	chat  *interactor.Chat
 }
 
 func NewDI(
@@ -14,11 +15,13 @@ func NewDI(
 	user *interactor.User,
 	skill *interactor.Skill,
 	room *interactor.Room,
+	chat *interactor.Chat,
 ) *di {
 	return &di{
 		login: login,
 		user:  user,
 		skill: skill,
 		room:  room,
+		chat:  chat,
 	}
 }

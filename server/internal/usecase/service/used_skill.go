@@ -36,5 +36,5 @@ func (s *UsedSkill) UpsertUsedSkill(ctx context.Context, userID string, skill []
 		skills = append(skills, entity.UsedSkill{UserID: userID, SkillID: s})
 	}
 
-	return s.repo.UpsertUsedSkills(ctx, skills)
+	return s.repo.UpsertUsedSkills(ctx, userID, skills)
 }

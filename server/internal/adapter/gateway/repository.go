@@ -1,6 +1,8 @@
 package gateway
 
 import (
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/murasame29/go-httpserver-template/internal/adapter/gateway/aws"
 	"github.com/murasame29/go-httpserver-template/internal/adapter/gateway/github"
 	"github.com/murasame29/go-httpserver-template/internal/adapter/gateway/repository"
 	"github.com/murasame29/go-httpserver-template/internal/usecase/dai"
@@ -17,9 +19,10 @@ type Repository struct {
 	*repository.RoomRepository
 	*repository.RoomMemberRepository
 	*github.GitHubSerivce
+	*aws.DynamoRepository
 }
 
-func NewRepository(db bun.IDB) *Repository {
+func NewRepository(db bun.IDB, dynamo *dynamodb.Client) *Repository {
 	return &Repository{
 		UserRepository:           repository.NewUserRepository(db),
 		SessionRepository:        repository.NewSessionRepository(db),
@@ -30,6 +33,7 @@ func NewRepository(db bun.IDB) *Repository {
 		RoomRepository:           repository.NewRoomRepository(db),
 		RoomMemberRepository:     repository.NewRoomMemberRepository(db),
 		GitHubSerivce:            github.NewGitHubSerivce(),
+		DynamoRepository:         aws.NewDynamoRepository(dynamo),
 	}
 }
 

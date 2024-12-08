@@ -31,19 +31,27 @@ function RouteComponent() {
 
         setUserName(data.name);
         setAvatarIcon(data.icon);
-        setSelectedUsingTags(
-          data.usedSkills.map((skill: { name: string }) => skill.name)
-        );
-        setSelectedWantTags(
-          data.wantLeanSkills.map((skill: { name: string }) => skill.name)
-        );
+        if (data.usedSkills) {
+          setSelectedUsingTags(
+            data.usedSkills.map((skill: { name: string }) => skill.name)
+          );
+        } else {
+          setSelectedUsingTags([]);
+        }
+        if (data.wantLeanSkills) {
+          setSelectedWantTags(
+            data.wantLeanSkills.map((skill: { name: string }) => skill.name)
+          );
+        } else {
+          setSelectedWantTags([]);
+        }
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }
     };
 
     fetchUserData();
-  }, []);
+  }, [token, userId]);
 
   const updateUserSkills = async () => {
     try {
@@ -74,11 +82,11 @@ function RouteComponent() {
       <div className="flex gap-8 items-center w-full">
         <Avatar className="h-24 w-24 bg-secondary">
           <AvatarImage src={avatarIcon} alt="User Avatar" className="" />
-          <AvatarFallback className="">CN</AvatarFallback>
+          <AvatarFallback className="">{userName.slice(0, 2)}</AvatarFallback>
         </Avatar>
         <h1 className="text-2xl font-bold">{userName}</h1>
       </div>
-      <div className="flex flex-col gap-10 pb-10">
+      <div className="flex flex-col gap-10 pb-10 w-full">
         <div>
           <div className="flex justify-between items-center mb-2">
             <p>学びたい技術や資格</p>

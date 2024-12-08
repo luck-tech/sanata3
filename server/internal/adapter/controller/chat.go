@@ -92,7 +92,11 @@ func (e *Event) MarshalTo(w io.Writer) error {
 	}
 
 	if e.Data != nil {
-		if err := json.NewEncoder(w).Encode(e.Data); err != nil {
+		data, err := json.Marshal(e.Data)
+		if err != nil {
+			return err
+		}
+		if _, err := fmt.Fprintf(w, "%s", data); err != nil {
 			return err
 		}
 

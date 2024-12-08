@@ -2,17 +2,15 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"log/slog"
 	"net/http"
 	"time"
 
 	"github.com/labstack/echo/v4"
-	_ "github.com/murasame29/go-httpserver-template/internal/entity"
 	"github.com/murasame29/go-httpserver-template/internal/framework/contexts"
 	"github.com/murasame29/go-httpserver-template/internal/usecase/interactor"
-	"github.com/r3labs/sse/v2"
+	"golang.org/x/net/websocket"
 )
 
 // googleLogin godoc
@@ -26,72 +24,56 @@ import (
 // @Failure  400  {object}  echo.HTTPError
 // @Failure  500  {object}  echo.HTTPError
 // @Router   /v1/rooms/{roomId}/chat [get]
-func JoinChatRoom(i *interactor.Chat, server *sse.Server) echo.HandlerFunc {
+func JoinChatRoom(i *interactor.Chat) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		roomId := c.Param("roomId")
 
-		w := c.Response()
-		w.Header().Set("Content-Type", "text/event-stream")
-		w.Header().Set("Cache-Control", "no-cache")
-		w.Header().Set("Connection", "keep-alive")
-
 		ctx := contexts.ConvertContext(c)
 
-		ticker := time.NewTicker(1 * time.Second)
-		defer ticker.Stop()
+		websocket.Handler(func(ws *websocket.Conn) {
+			defer ws.Close()
+			ticker := time.NewTicker(1 * time.Second)
+			var lastTime = time.Time{}
+			defer ticker.Stop()
 
-		var lastTime time.Time
-
-		for {
-			select {
-			case <-c.Request().Context().Done():
-				slog.Info("SSE client disconnect")
-				return nil
-			case <-ticker.C:
-				chats, err := i.Get(ctx, interactor.GetChatParam{
-					RoomID:   roomId,
-					LastTime: lastTime,
-				})
-				log.Println("ちゃっと！", chats)
-				// if err != nil {
-				// 	slog.Error("failed to get chat", "error", err)
-				// 	if err := NewEvent(map[string]string{"error": err.Error()}).MarshalTo(w); err != nil {
-				// 		slog.Error("failed to write event", "error", err)
-				// 	}
-				// } else {
-				// 	if chats != nil {
-				// 		lastTime = time.Now()
-				// 	}
-				// 	if err := NewEvent(chats).MarshalTo(w); err != nil {
-				// 		slog.Error("failed to write event", "error", err)
-				// 	}
-				// }
-
-				if err != nil {
-					slog.Error("failed to get chat", "error", err)
-					data, err := MarshalTo(map[string]string{"error": err.Error()})
-					if err != nil {
-						slog.Error("failed to marshal event", "error", err)
-					}
-
-					server.Publish("chat", &sse.Event{
-						Data: []byte(data),
+			for {
+				select {
+				case <-c.Request().Context().Done():
+					return
+				case <-ticker.C:
+					chats, err := i.Get(ctx, interactor.GetChatParam{
+						RoomID:   roomId,
+						LastTime: lastTime,
 					})
-				} else {
-					if len(chats) != 0 {
-						lastTime = time.Now()
-						data, err := MarshalTo(chats)
+					log.Println("ちゃっと！", chats)
+
+					if err != nil {
+						slog.Error("failed to get chat", "error", err)
+						data, err := MarshalTo(map[string]string{"error": err.Error()})
 						if err != nil {
 							slog.Error("failed to marshal event", "error", err)
 						}
-						fmt.Println("hogehoge")
-						server.Publish("chat", &sse.Event{
-							Data: []byte(data),
-						})
+
+						if err := websocket.Message.Send(ws, string(data)); err != nil {
+							c.Logger().Error(err)
+						}
+					} else {
+						if len(chats) != 0 {
+							lastTime = time.Now()
+							data, err := MarshalTo(chats)
+							if err != nil {
+								slog.Error("failed to marshal event", "error", err)
+							}
+							if err := websocket.Message.Send(ws, string(data)); err != nil {
+								c.Logger().Error(err)
+							}
+						}
 					}
 				}
 			}
-		}
+		}).ServeHTTP(c.Response(), c.Request())
+
+		return nil
 	}
 }
 

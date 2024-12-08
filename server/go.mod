@@ -13,11 +13,13 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang-migrate/migrate/v4 v4.18.1
 	github.com/google/uuid v1.6.0
+	github.com/gorilla/websocket v1.5.3
 	github.com/jackc/pgx/v5 v5.7.1
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.13.0
 	github.com/lib/pq v1.10.9
 	github.com/pandoratoolbox/bun/extra/bunslog v0.0.0-20240419144920-8d9f15e33ce6
+	github.com/r3labs/sse/v2 v2.10.0
 	github.com/sourcegraph/conc v0.3.0
 	github.com/swaggo/swag v1.16.4
 	github.com/uptrace/bun v1.2.6
@@ -62,7 +64,6 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/pandoratoolbox/json v1.15.7 // indirect
 	github.com/puzpuzpuz/xsync/v3 v3.4.0 // indirect
-	github.com/r3labs/sse/v2 v2.10.0 // indirect
 	github.com/rogpeppe/go-internal v1.13.1 // indirect
 	github.com/tmthrgd/go-hex v0.0.0-20190904060850-447a3041c3bc // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect

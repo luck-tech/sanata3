@@ -87,20 +87,26 @@ function RouteComponent() {
   useEffect(() => {
     const token = localStorage.getItem("code");
     const apiUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
-    const evtSource = new EventSource(
-      `${apiUrl}/v1/rooms/${roomId}/chat?auth=${token}`
+
+    let socketURL = apiUrl.split(":")
+    socketURL[0] = "ws"
+    const url = socketURL.join(":")
+
+    const socket = new WebSocket(
+      `${url}/v1/rooms/${roomId}/chat?auth=${token}`
     );
 
-    console.log(evtSource);
+    socket.addEventListener("open", () => {
+            console.log("connected");
+    });
 
-    // メッセージを受信したときの処理
-    evtSource.onmessage = (event) => {
-      console.log(event.data);
-    };
+    socket.addEventListener("message", e => {
+        console.log(e);
+    });
 
     // コンポーネントがアンマウントされたときに接続を閉じる
     return () => {
-      evtSource.close();
+      socket.close();
     };
   }, [roomId]);
 

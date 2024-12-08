@@ -61,7 +61,7 @@ function RouteComponent() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen max-w-lg w-full mx-auto px-6 py-4">
-      <h1 className="text-4xl mb-10 font-bold">アプリ名</h1>
+      <h1 className="text-4xl mb-10 font-bold">Haru World</h1>
       <p className="text-muted-foreground mb-10 text-center">
         入力された内容からおすすめのルームを表示します
       </p>

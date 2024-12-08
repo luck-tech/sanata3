@@ -31,7 +31,7 @@ export function AppSidebar({ user, rooms }: { user: User; rooms: Room[] }) {
                   <GalleryVerticalEnd className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">サービス名</span>
+                  <span className="font-semibold">Haru World</span>
                 </div>
               </span>
             </SidebarMenuButton>

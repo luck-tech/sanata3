@@ -17,7 +17,7 @@ func NewRoomMemberRepository(db bun.IDB) *RoomMemberRepository {
 }
 
 func (r *RoomMemberRepository) GetRoomMembers(ctx context.Context, roomID string) ([]entity.RoomMember, error) {
-	var roomMembers []entity.RoomMember
+	roomMembers := []entity.RoomMember{}
 	if err := r.db.NewSelect().Model(&roomMembers).Where("room_id = ?", roomID).Scan(ctx, &roomMembers); err != nil {
 		return nil, err
 	}
@@ -26,7 +26,7 @@ func (r *RoomMemberRepository) GetRoomMembers(ctx context.Context, roomID string
 }
 
 func (r *RoomMemberRepository) GetRoomMembersByRoomIDs(ctx context.Context, roomIDs []string) ([]entity.RoomMember, error) {
-	var roomMembers []entity.RoomMember
+	roomMembers := []entity.RoomMember{}
 	if err := r.db.NewSelect().Model(&roomMembers).Where("room_id IN (?)", bun.In(roomIDs)).Scan(ctx, &roomMembers); err != nil {
 		return nil, err
 	}

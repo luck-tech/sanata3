@@ -58,7 +58,7 @@ func (r *SkillRepository) GetSkillsByName(ctx context.Context, skills []string) 
 		return nil, nil // Nothing to do
 	}
 
-	var skillList []entity.Skill
+	skillList := []entity.Skill{}
 	err := r.db.NewSelect().Model(&skillList).Where("name IN (?)", bun.In(skills)).Scan(ctx, &skillList)
 	if err != nil {
 		return nil, err
@@ -68,7 +68,7 @@ func (r *SkillRepository) GetSkillsByName(ctx context.Context, skills []string) 
 }
 
 func (r *SkillRepository) SearchSkills(ctx context.Context, query string, limit int) ([]entity.Skill, error) {
-	var skillList []entity.Skill
+	skillList := []entity.Skill{}
 
 	// Subquery to count used skills.
 	usedSkillsCount := r.db.NewSelect().

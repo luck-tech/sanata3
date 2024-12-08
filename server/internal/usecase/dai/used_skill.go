@@ -7,6 +7,6 @@ import (
 )
 
 type UsedSkill interface {
-	UpsertUsedSkills(ctx context.Context, usedSkill []entity.UsedSkill) error
+	UpsertUsedSkills(ctx context.Context, userID string, usedSkill []entity.UsedSkill) error
 	GetUsedSkillsByUserID(ctx context.Context, userID string) ([]entity.UsedSkill, error)
 }

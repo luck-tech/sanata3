@@ -33,7 +33,7 @@ func (r *AimSkillRepository) UpsertAimSkills(ctx context.Context, aimSkills []en
 }
 
 func (r *AimSkillRepository) GetAimSkillsByRoomID(ctx context.Context, roomID string) ([]entity.AimSkill, error) {
-	var aimSkills []entity.AimSkill
+	aimSkills := []entity.AimSkill{}
 	if err := r.db.NewSelect().Model(&aimSkills).Where("room_id = ?", roomID).Scan(ctx, &aimSkills); err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func (r *AimSkillRepository) GetAimSkillsByRoomID(ctx context.Context, roomID st
 }
 
 func (r *AimSkillRepository) GetAimSkillsByRoomIDs(ctx context.Context, roomIDs []string) ([]entity.AimSkill, error) {
-	var aimSkills []entity.AimSkill
+	aimSkills := []entity.AimSkill{}
 	if err := r.db.NewSelect().Model(&aimSkills).Where("room_id IN (?)", bun.In(roomIDs)).Scan(ctx, &aimSkills); err != nil {
 		return nil, err
 	}

@@ -46,7 +46,7 @@ func (s *UserRepository) GetUser(ctx context.Context, id string) (*entity.User, 
 }
 
 func (s *UserRepository) GetUsers(ctx context.Context, userIDs []string) ([]entity.User, error) {
-	var users []entity.User
+	users := []entity.User{}
 	err := s.db.NewSelect().
 		Model(&users).
 		Where("id IN (?)", bun.In(userIDs)).

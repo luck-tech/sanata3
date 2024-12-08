@@ -7,6 +7,6 @@ import (
 )
 
 type WantLearnSkill interface {
-	UpsertWantLearnSkills(ctx context.Context, wantLearnSkills []entity.WantLearnSkill) error
+	UpsertWantLearnSkills(ctx context.Context, userID string, wantLearnSkills []entity.WantLearnSkill) error
 	GetWantLearnSkills(ctx context.Context, userID string) ([]entity.WantLearnSkill, error)
 }

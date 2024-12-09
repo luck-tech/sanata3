@@ -3,6 +3,7 @@ package interactor
 import (
 	"context"
 
+	neptune "github.com/murasame29/go-httpserver-template/internal/adapter/gateway/aws"
 	"github.com/murasame29/go-httpserver-template/internal/entity"
 	"github.com/murasame29/go-httpserver-template/internal/framework/contexts"
 	"github.com/murasame29/go-httpserver-template/internal/framework/serrors"
@@ -116,6 +117,10 @@ func (u *User) Update(ctx context.Context, param UpdateUserParam) (*entity.User,
 	}
 
 	if err := u._wantLearnSkill.UpsertWantLearnSkill(ctx, param.UserID, param.WantLearnSkills); err != nil {
+		return nil, nil, nil, err
+	}
+
+	if err := neptune.UpdateUserSkillEdge(ctx, param.UserID, param.UsedSkills, param.WantLearnSkills); err != nil {
 		return nil, nil, nil, err
 	}
 

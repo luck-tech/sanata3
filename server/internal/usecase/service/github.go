@@ -5,6 +5,7 @@ import (
 	"sort"
 	"strconv"
 
+	neptune "github.com/murasame29/go-httpserver-template/internal/adapter/gateway/aws"
 	"github.com/murasame29/go-httpserver-template/internal/entity"
 	"github.com/murasame29/go-httpserver-template/internal/usecase/dai"
 )
@@ -52,6 +53,10 @@ func (g *GitHub) Login(ctx context.Context, code string) (*LoginGitHubResult, er
 			Icon:  userInfo.AvatarURL,
 		}
 		if err := g.repo.CreateUser(ctx, newUser); err != nil {
+			return nil, err
+		}
+
+		if err := neptune.AddUserNode(ctx, strconv.Itoa(userInfo.ID)); err != nil {
 			return nil, err
 		}
 	} else {

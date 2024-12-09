@@ -5,6 +5,7 @@ go 1.23
 toolchain go1.23.2
 
 require (
+	github.com/apache/tinkerpop/gremlin-go/v3 v3.7.3
 	github.com/aws/aws-sdk-go-v2 v1.32.6
 	github.com/aws/aws-sdk-go-v2/config v1.28.6
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.15.20
@@ -48,6 +49,7 @@ require (
 	github.com/go-openapi/jsonreference v0.21.0 // indirect
 	github.com/go-openapi/spec v0.21.0 // indirect
 	github.com/go-openapi/swag v0.23.0 // indirect
+	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
@@ -60,6 +62,7 @@ require (
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
+	github.com/nicksnyder/go-i18n/v2 v2.4.1 // indirect
 	github.com/pandoratoolbox/json v1.15.7 // indirect
 	github.com/puzpuzpuz/xsync/v3 v3.4.0 // indirect
 	github.com/r3labs/sse/v2 v2.10.0 // indirect
